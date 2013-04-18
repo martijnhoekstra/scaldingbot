@@ -47,6 +47,13 @@ object AfCStatsBot extends Query {
     val call = Map("list" -> list, "cmtitle" -> catDeclined, "cmprop" -> buildPropString(props))
     articles(call)
     
+  }
+  
+  def buildArticle(id : Long) = {
+    
+  }
+  
+  def buildRevision(id : Long) = {
     
   }
   
