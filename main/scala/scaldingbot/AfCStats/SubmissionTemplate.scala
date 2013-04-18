@@ -16,21 +16,35 @@ class SubmissionTemplate {
         if (kv.length == 2) map + (kv(0) -> kv(1))
         else map
       })
+      
+      getSubmission(params, letter)
 
-      letter match {
-        case "d" => getDeclined(params)
-        case "" => getSubmitted(params)
-        case _ => None
-      }
     }
   }
   
-  def getDeclined(params : Map[String, String]) = {
-    None
+  def getSubmission(params : Map[String, String], letter : String) = {
+    val submitterName = params.get("u")
+    val declineTimestamp = params.get("declinets")
+    val decliner = params.get("decliner")
+    val submittedTiemstamp=params.get("ts")
+    val opending = getPending(params)
+    letter match {
+      case "" => opending
+      case "d" => opending match {
+        case None => None
+        case Some(pending) => getDecline(params, pending)
+      }
+      case _ => None
+    }
   }
   
-  def getSubmitted(params : Map[String, String]) = {
-    None
+  def getDecline(params : Map[String, String], pending : AfCPending) : Option[AfCDeclined] = {
+    ???
   }
   
+
+  def getPending(params : Map[String, String]) : Option[AfCPending]= {
+    ???
+  }
+    
 }
