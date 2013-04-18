@@ -1,0 +1,5 @@
+package ipaddress
+
+trait IPAddress {
+
+}
