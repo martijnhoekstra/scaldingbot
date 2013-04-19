@@ -2,6 +2,8 @@ package scaldingbot.AfCStats
 
 import scala.util.matching.Regex
 import scala.collection.immutable.HashMap
+import scaldingbot.wikitypes.Editor
+import org.joda.time.DateTime
 
 class SubmissionTemplate {
    // submitted: {{AFC submission| | |ts=20130218044659       |u=Alex glen richards|ns=2}}
@@ -23,28 +25,42 @@ class SubmissionTemplate {
   }
   
   def getSubmission(params : Map[String, String], letter : String) = {
-    val submitterName = params.get("u")
-    val declineTimestamp = params.get("declinets")
-    val decliner = params.get("decliner")
-    val submittedTiemstamp=params.get("ts")
     val opending = getPending(params)
     letter match {
       case "" => opending
       case "d" => opending match {
         case None => None
-        case Some(pending) => getDecline(params, pending)
+        case Some(pending) => getDecline(pending, params)
       }
       case _ => None
     }
   }
   
-  def getDecline(params : Map[String, String], pending : AfCPending) : Option[AfCDeclined] = {
-    ???
+  def getDecline(pending : AfCPending, params : Map[String, String]) : Option[AfCDeclined] = {
+    val declineTimestamp = params.get("declinets")
+    val declinero = params.get("decliner")
+    if (declineTimestamp.isEmpty || declinero.isEmpty) None
+    else {
+      val decliner = Editor.fromName(declinero.get)
+      val declineTime = new DateTime(declineTimestamp.get.toInt * 1000L)
+      Some(AfCDeclined(pending, decliner, declineTime))
+    }
+    
   }
   
 
   def getPending(params : Map[String, String]) : Option[AfCPending]= {
-    ???
+    val submitterName = params.get("u")
+    val submittedTimestamp=params.get("ts")
+    if (submitterName.isEmpty || submitterName.isEmpty) None
+    else {
+      val submitter = Editor.fromName(submitterName.get)
+      val submissionTime = new DateTime(submittedTimestamp.get.toInt * 1000L)
+      Some(AfCPending(submitter, submissionTime))
+    }
+    
+    
+    
   }
     
 }
