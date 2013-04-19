@@ -18,9 +18,7 @@ class SubmissionTemplate {
         if (kv.length == 2) map + (kv(0) -> kv(1))
         else map
       })
-      
       getSubmission(params, letter)
-
     }
   }
   
