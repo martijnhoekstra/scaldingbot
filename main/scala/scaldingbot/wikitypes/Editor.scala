@@ -17,7 +17,26 @@ object Editor {
     cache(username)   
   }
   
-  def fetchForName(username : String) = {
+  implicit def IPv4Address2IP4(address : IPv4Address) : IP4 = {
+    IP4(address)
+  }
+    implicit def IPv6Address2IP6(address : IPv6Address) : IP6 = {
+    IP6(address)
+  }
+  
+  def fetchForName(username : String) : Editor = {
+    IPv4Address.parseIp(username) match {
+      case Some(ip) => ip
+      case None => {
+        IPv6Address.parseIp(username) match {
+          case Some(ip) => ip
+          case None => fetchRegisteredUser(username)
+        }
+      }
+    }
+  }
+  
+  def fetchRegisteredUser(username : String) : Editor = {
     ???
   }
 }
