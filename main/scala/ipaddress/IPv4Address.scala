@@ -1,12 +1,16 @@
 package ipaddress
 import scala.math
 
-class IPv4Address(ipstring: String) extends IPAddress {
+class IPv4Address(address: Long) extends IPAddress {
 
 }
 
 object IPv4Address {
   def isIpv4Address(address: String) = {
+    toInt(address) match {
+      case None => false
+      case _ => true
+    }
   }
 
   def intpow(base: Long, exp: Int) = {
@@ -38,4 +42,12 @@ object IPv4Address {
       }
     }
   }
+  
+  def parseIp(address: String) = {
+    toInt(address) match {
+      case Some(ip) => Some(new IPv4Address(ip))
+      case None => None
+    }
+  }
+  
 }
