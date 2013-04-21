@@ -50,11 +50,11 @@ object AfCStatsBot extends Query {
   }
   
   def buildArticle(id : Long) = {
-    
+    ???
   }
   
   def buildRevision(id : Long) = {
-    
+    ???
   }
   
   

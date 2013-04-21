@@ -37,6 +37,6 @@ object Editor {
   }
   
   def fetchRegisteredUser(username : String) : Editor = {
-    ???
+    Registered(0, username)
   }
 }
