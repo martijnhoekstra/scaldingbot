@@ -59,6 +59,26 @@ object IPv6Address {
   }
 
   def toBigInt(address: String): Option[BigInt] = {
-    ???
+    val splitted = address.split("""::""").toList
+    val split = splitted match {
+      case head :: second :: more :: Nil => Nil
+      case head :: second :: Nil => splitted
+      case head :: Nil => head :: "" :: Nil
+      case _ => Nil
+    }
+    split match {
+      case Nil => None
+      case highstring :: lowstring :: Nil => {
+        val highgroups = highstring.split(':').map(parseGroup)
+        val lowgroups = lowstring.split(':').map(parseGroup)
+        if (!highgroups.forall(_.isDefined)) None
+        else if (!lowgroups.forall(_.isDefined)) None
+        else {
+          val zipped = highgroups.toList.flatten.zip(7 until (-1, -1)) ::: lowgroups.toList.flatten.reverse.zip(0 until 8)
+          val sum = zipped.map(t => t._1 * intpow(65536, t._2)).foldLeft(BigInt(0))(_ + _)
+          Some(sum)
+        }
+      }
+    }
   }
 }
