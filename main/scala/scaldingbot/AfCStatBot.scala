@@ -38,7 +38,7 @@ object AfCStatsBot extends Query {
     val props = "ids" :: Nil
     val call = Map("list" -> list, "cmtitle" -> catDeclined, "cmprop" -> props.mkString("|"))
     val ids = articleIds(call)
-    ids.map(buildArticle)
+    ids.map(buildArticle).map(perform)
     
   }
   

@@ -7,7 +7,7 @@ package scaldingbot.net.query
 class Revision(val switches : Set[String], properties : Map[Property, String]) extends PropertyGroup{
   val prefix = "rv"
   val name = "revisions"
-  def queryPairs = switchpair :: properties.map(p => (prefix + p._1, p._2)).toList 
+  def queryPairs = "prop" -> name :: switchpair :: properties.map(p => (prefix + p._1.name, p._2)).toList 
 }
 
 
