@@ -1,5 +1,5 @@
 package scaldingbot.net.query
 
-class Property(val underlying : String) {
+abstract class Property(val name : String) {
 
 }

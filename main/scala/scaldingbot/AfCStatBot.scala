@@ -9,7 +9,7 @@ import scala.annotation.tailrec
 
 object AfCStatsBot extends Query {
   
-  def articles(queryparams : Map[String, String]) = {
+  def articleIds(queryparams : Map[String, String]) = {
       
       def _next(continue : String, current : List[Long], first : Boolean ) : Stream[Long]  = {
         current match {
@@ -38,7 +38,7 @@ object AfCStatsBot extends Query {
     val list = "categorymembers"
     val props = "ids" :: Nil
     val call = Map("list" -> list, "cmtitle" -> catDeclined, "cmprop" -> props.mkString("|"))
-    articles(call)
+    articleIds(call)
     
   }
   
