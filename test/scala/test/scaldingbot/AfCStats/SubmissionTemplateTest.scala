@@ -2,12 +2,14 @@ package test.scaldingbot.AfCStats
 
 import org.scalatest._
 import scaldingbot.AfCStats.SubmissionTemplate
+import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
 
 class SubmissionTemplateTest extends FunSpec {
   describe("An SubmissionTemplate address") {
-    it("should be able to parse templates in a list") {
+    it("should be able to parse templates in an article") {
       val pagecontent = """
-        {{AFC submission|d|nn|declinets=20130421032553|decliner=Davidwr|ts=20130420034914|u=71.94.235.210|ns=5|small=yes}}{{AFC submission|d|v|declinets=20130406050345|decliner=Anne Delong|ts=20130405194707|u=71.94.235.210|ns=5}}
+        {{AFC submission||nn|ts=20130420034914|u=71.94.235.210|ns=5|small=yes}}{{AFC submission|d|v|declinets=20130406050345|decliner=Anne Delong|ts=20130405194707|u=71.94.235.210|ns=5}}
 {{afc comment|1=Declining due to lack of reliable sources and apparent lack of notability. [[User:davidwr|davidwr]]/<small><small>([[User_talk:davidwr|talk]])/([[Special:Contributions/Davidwr|contribs]])/([[Special:Emailuser/davidwr|e-mail]])</small></small> 03:25, 21 April 2013 (UTC)}}
 
 {{afc comment|1=Please find sources such as maps, gazetteers, news reports or books to vrify the information in this article. &mdash;[[User:Anne Delong|Anne Delong]] ([[User talk:Anne Delong|talk]]) 05:03, 6 April 2013 (UTC)}}
@@ -33,11 +35,13 @@ Haiden island is the westernmost island in a four island chain (referred to as t
 *
 """
         val submissions = SubmissionTemplate.getSubmissionData(pagecontent).toList
-        assert(submissions.length == 3)
-        
-        
-        
-    }
+        assert(submissions.length == 3)    }
   }
+  
+  it("should be able to parse timestamps"){
+    val formatted = "20130420034914"
+    assert(SubmissionTemplate.parseDateTime(formatted) == Some(new DateTime(2013, 4, 20, 3, 49, 14, 0, DateTimeZone.UTC)))
+  }
+  
 
 }
