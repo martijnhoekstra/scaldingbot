@@ -32,19 +32,12 @@ object AfCStatsBot extends Query {
     }
   
   def getArticles = {
-    def buildPropString(props : List[String]) : String = {
-      props match {
-        case Nil => ""
-        case head :: second :: tail => head + "|" + buildPropString(second :: tail)
-        case head :: tail => head
-      }
-    }
     
     val catDeclined = "Category:Declined_AfC_submissions";
     val action = "query"
     val list = "categorymembers"
     val props = "ids" :: Nil
-    val call = Map("list" -> list, "cmtitle" -> catDeclined, "cmprop" -> buildPropString(props))
+    val call = Map("list" -> list, "cmtitle" -> catDeclined, "cmprop" -> props.mkString("|"))
     articles(call)
     
   }
