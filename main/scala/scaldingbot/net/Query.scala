@@ -17,7 +17,7 @@ trait Query {
     val queryparams = defaultParams ++ extraParams
     def mybase = endpoint.GET.addQueryParameter("action", action) <:< Map("user-agent" -> useragent)
     val query = queryparams.foldLeft(mybase)((q, kvp ) => q.addQueryParameter(kvp._1, kvp._2))
-    println(query)
+    println(query.build().getRawUrl())
     val result = Http(query OK as.String)
     result()
   }

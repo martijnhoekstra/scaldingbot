@@ -49,7 +49,7 @@ object AfCStatsBot extends Query {
     )
     val revparams = revprops.queryPairs.map(p => p._1 -> p._2 )
         
-    val params = Map[String, String]("ids" -> id.toString()) ++ revparams
+    val params = Map[String, String]("pageids" -> id.toString()) ++ revparams
     params
     
         
