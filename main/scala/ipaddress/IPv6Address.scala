@@ -79,6 +79,7 @@ object IPv6Address {
           Some(sum)
         }
       }
+      case _ => throw new Error("horrible breakage")
     }
   }
 }

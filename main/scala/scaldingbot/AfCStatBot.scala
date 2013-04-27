@@ -5,7 +5,7 @@ import Defaults._
 import Stream._
 import scaldingbot.net._
 import scaldingbot.AfCStats._
-import scala.annotation.tailrec
+import scaldingbot.net.query._
 
 object AfCStatsBot extends Query {
   
@@ -34,16 +34,25 @@ object AfCStatsBot extends Query {
   def getArticles = {
     
     val catDeclined = "Category:Declined_AfC_submissions";
-    val action = "query"
     val list = "categorymembers"
     val props = "ids" :: Nil
     val call = Map("list" -> list, "cmtitle" -> catDeclined, "cmprop" -> props.mkString("|"))
-    articleIds(call)
+    val ids = articleIds(call)
+    ids.map(buildArticle)
     
   }
   
   def buildArticle(id : Long) = {
-    ???
+    val revprops = new Revision(
+        ("timestamp" :: "content":: "user" :: "userid" :: Nil).toSet,
+        Map[Property, String](Continue -> "", Limit -> "max", Dir -> "newer")
+    )
+    val revparams = revprops.queryPairs.map(p => p._1 -> p._2 )
+        
+    val params = Map[String, String]("ids" -> id.toString()) ++ revparams
+    params
+    
+        
   }
   
   def buildRevision(id : Long) = {

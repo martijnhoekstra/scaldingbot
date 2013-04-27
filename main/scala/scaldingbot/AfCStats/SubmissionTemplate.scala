@@ -2,7 +2,7 @@ package scaldingbot.AfCStats
 
 import scala.util.matching.Regex
 import scala.collection.immutable.HashMap
-import scaldingbot.wikitypes.Editor
+import scaldingbot.wiki.Editor
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 

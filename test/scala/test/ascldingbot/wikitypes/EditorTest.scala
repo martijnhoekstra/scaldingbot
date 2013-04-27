@@ -1,6 +1,6 @@
 package test.ascldingbot.wikitypes
 import org.scalatest._
-import scaldingbot.wikitypes._
+import scaldingbot.wiki._
 
 class EditorTest extends FunSpec {
   describe("An Editor") {

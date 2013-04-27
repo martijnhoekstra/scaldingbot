@@ -1,9 +1,11 @@
 package scaldingbot.net
 
-import dispatch._, Defaults._
+import dispatch._
+import Defaults._
+import scaldingbot.settings.Settings
 
 trait Query {
-  val useragent = "Scaldingbot/0.1 (https://github.com/martijnhoekstra/scaldingbot/	; Martijnhoekstra@gmail.com - User:Martijn_Hoekstra en.wikipedia) ScalaDispatch/0.10.0"
+  lazy val useragent = s"Scaldingbot/0.1 (https://github.com/martijnhoekstra/scaldingbot/; ${Settings.email} - User:${Settings.user}) ScalaDispatch/0.10.0"
   
   val action = "query"
   def base = host("en.wikipedia.org")

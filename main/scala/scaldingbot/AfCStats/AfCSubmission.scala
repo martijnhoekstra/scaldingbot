@@ -1,7 +1,7 @@
 package scaldingbot.AfCStats
 
 import org.joda.time.DateTime
-import scaldingbot.wikitypes._
+import scaldingbot.wiki._
 
 abstract class AfCSubmission
 case class AfCPending (submitter : Editor, submitted : DateTime) extends AfCSubmission
