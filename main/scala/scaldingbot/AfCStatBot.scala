@@ -7,6 +7,7 @@ import scaldingbot.net._
 import scaldingbot.AfCStats._
 import scaldingbot.net.query._
 
+
 object AfCStatsBot extends Query {
   
   def articleIds(queryparams : Map[String, String]) = {
@@ -38,7 +39,8 @@ object AfCStatsBot extends Query {
     val props = "ids" :: Nil
     val call = Map("list" -> list, "cmtitle" -> catDeclined, "cmprop" -> props.mkString("|"))
     val ids = articleIds(call)
-    ids.map(buildArticle).map(perform)
+    val mylist = ids.map(buildArticle(_))
+    mylist
     
   }
   
@@ -50,7 +52,8 @@ object AfCStatsBot extends Query {
     val revparams = revprops.queryPairs.map(p => p._1 -> p._2 )
         
     val params = Map[String, String]("pageids" -> id.toString()) ++ revparams
-    params
+    val response = perform(params)
+    SubmissionTemplate.getSubmissionData(response).flatten.toSet
     
         
   }

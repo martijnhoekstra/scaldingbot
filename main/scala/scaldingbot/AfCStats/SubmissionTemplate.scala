@@ -42,7 +42,12 @@ object SubmissionTemplate {
     else {
       val decliner = Editor.fromName(declinero.get)
       val declineTime = parseDateTime(declineTimestamp.get).get
-      Some(AfCDeclined(pending, decliner, declineTime))
+      val declined = new AfCDeclined{
+        val submission = pending
+        val reviewer = decliner
+        val reviewed = declineTime
+      }
+      Some(declined)
     }
     
   }
@@ -55,7 +60,8 @@ object SubmissionTemplate {
     else {
       val submitter = Editor.fromName(submitterName.get)
       val submissionTime = parseDateTime(submittedTimestamp.get).get
-      Some(AfCPending(submitter, submissionTime))
+      val pending = new AfCPending(submitter, submissionTime)
+      Some(pending)
     }
     
   }

@@ -14,5 +14,9 @@ object AfCParser {
     val continuestring :: none = for { JField("cmcontinue", JString(s)) <- json } yield s
     (continuestring, ids.toList)
   }
+  
+  def parseArticle(jsonstring : String) = {
+    
+  }
 
 }
