@@ -9,13 +9,16 @@ import scaldingbot.wiki.Article
 import scaldingbot.wiki.RevisionHistory
 import scaldingbot.wiki.Namespace
 
-class RevisionsParser(pageId : Long) {
-  val pageIdString = pageId.toString
+
   case class FullQueryExtractor(`query-continue` : RevisionsContinueExtractor)
   case class RevisionsContinueExtractor(revisions : InnerRevisionConintueExtractor)
   case class InnerRevisionConintueExtractor(rvcontinue : Long)
-  case class PageExtractor(ns : Int, title : String, pageId : Long, revisions : Seq[RevisionExtractor])
-  case class RevisionExtractor(revid : Long, `*` : String, timestamp : String, user : String, userid : Int)
+  case class PageExtractor(ns : Int, pageid : Long, title : String, revisions : Seq[RevisionExtractor])
+  case class RevisionExtractor(revid : Long, `*` : String , timestamp : String, user : String, userid : Long)
+
+
+class RevisionsParser(pageIdl : Long) {
+  val pageIdString = pageIdl.toString
   
   def getArticleWithRevisions(jsonstring : String) = {
     implicit val formats = DefaultFormats
