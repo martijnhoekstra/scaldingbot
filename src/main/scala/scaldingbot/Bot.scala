@@ -11,11 +11,17 @@ object Bot {
 
   def main(args: Array[String]): Unit = {
     
-    val articles = AfCStatsBot.getArticles.take(100)
-    val res = articles.map(basicstats(_))
+    val articles = AfCStatsBot.getArticles.take(1000)
+    val res = articles.collect { case Some(t) =>  basicstats(t) } 
     res.foreach(println)
+    val agg = res.foldLeft(Map.empty : Map[Option[String], Int])((t, m) => sumMergeMap(t, m._3))
+    println(agg)
     val stop = 5 
   }
+  
+    def sumMergeMap[T](some : Map[T, Int], other : Map[T, Int]) = {
+      some.foldLeft(other) ((t, n) => t + ((n._1, n._2 + t.getOrElse(n._1, 0) )))
+    }
   
   def basicstats(a : (Article with RevisionHistory[Revision with RevisionContent], Map[Revision with RevisionContent, Set[AfCSubmission]])) = {
       val numedits = a._1.revisions.count(_ => true)

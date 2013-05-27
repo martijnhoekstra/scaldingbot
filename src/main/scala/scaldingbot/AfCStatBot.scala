@@ -62,8 +62,9 @@ object AfCStatsBot extends Query {
     val response = perform(params)
     val revisions = buildRevisions(response, id)
     revisions match {
-      case (Some(continue), arts) => ??? //do the query continue
-      case (None, arts) => (arts, associateSubmissionData(arts))
+      case None => None
+      case Some((Some(continue), arts)) => ??? //do the query continue
+      case Some((None, arts)) => Some(arts, associateSubmissionData(arts))
     }
   }
   

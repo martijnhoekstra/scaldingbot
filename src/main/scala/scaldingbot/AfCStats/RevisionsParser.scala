@@ -25,10 +25,14 @@ class RevisionsParser(pageId : Long) {
     val json = parse(jsonstring)
     val qc = json.extractOpt[FullQueryExtractor].map(fqe => fqe.`query-continue`.revisions.rvcontinue)
     val page = json \\ "query" \\ "pages" \\ pageIdString
-    val p = page.extract[PageExtractor]
-    val revisions = p.revisions.map(buildRevision)
-    val article = buildArticle(p, revisions)
-    (qc, article)
+    page.extractOpt[PageExtractor] match {
+      case None => None
+      case Some(p) => {
+        val revisions = p.revisions.map(buildRevision)
+        val article = buildArticle(p, revisions)
+        Some(qc, article)
+      }
+    }
   }
   
   def buildArticle(page : PageExtractor, revs : Seq[Revision with RevisionContent]) = {

@@ -22,6 +22,7 @@ class SubmissionTemplateTest extends FunSpec {
           assert(expectedEditor == pending.submitter, "submitter not equal to expected submitter")
         }
         case None => assert(false, "failed to parse template to AfC Pending")
+        case Some(other) => assert(false, "failed to parse template to AfC Pending, got " + other.getClass().getName() + " instead")
       }
     }
     

@@ -8,8 +8,8 @@ import scaldingbot.wiki.Editor
 import scaldingbot.wiki.Registered
 
 class RevisionParserTest extends FunSpec {
-  describe ("A RevisionsParser") {
-    it("should parse an article"){
+  describe("A RevisionsParser") {
+    it("should parse an article") {
       val jsonstring = """{ "limits" : { "revisions" : 5000 },
   "query" : { "pages" : { "37590947" : { "ns" : 5,
               "pageid" : 37590947,
@@ -33,18 +33,24 @@ class RevisionParserTest extends FunSpec {
               "title" : "mytitle"
             } } }
 }"""
-        
+
       val parser = new RevisionsParser(37590947l)
-      val (continue, article) = parser.getArticleWithRevisions(jsonstring)
-      assert(article.title == "mytitle")
-      assert(article.namespace.id == 5)
-      val revisions = article.revisions
-      assert(revisions.length == 2)
-      assert(revisions.forall(r => r.author == Registered(0, "Oleksii777")))
+      parser.getArticleWithRevisions(jsonstring) match {
+
+        case None => assert(false, "failed to parse json")
+        case Some((continue, article)) => {
+          assert(article.title == "mytitle")
+          assert(article.namespace.id == 5)
+          val revisions = article.revisions
+          assert(revisions.length == 2)
+          assert(revisions.forall(r => r.author == Registered(0, "Oleksii777")))
+        }
+      }
+
     }
-    
-    it("should parse a continue string"){
-      
+
+    it("should parse a continue string") {
+
     }
   }
 }
