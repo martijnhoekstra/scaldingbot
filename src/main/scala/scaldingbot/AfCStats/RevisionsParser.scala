@@ -17,8 +17,8 @@ import scaldingbot.wiki.Namespace
   case class RevisionExtractor(revid : Long, `*` : String , timestamp : String, user : String, userid : Long)
 
 
-class RevisionsParser(pageIdl : Long) {
-  val pageIdString = pageIdl.toString
+class RevisionsParser(pageId : Long) {
+  val pageIdString = pageId.toString
   
   def getArticleWithRevisions(jsonstring : String) = {
     implicit val formats = DefaultFormats
@@ -38,7 +38,7 @@ class RevisionsParser(pageIdl : Long) {
   }
   
   def buildRevision(re : RevisionExtractor) = {
-    val dt = DateTime.parse(re.timestamp, ISODateTimeFormat.dateTimeNoMillis())
+    val dt = DateTime.parse(re.timestamp, ISODateTimeFormat.dateTimeNoMillis()).toDateTimeISO()
     new Revision(re.revid, re.user, dt) with RevisionContent {
       val content = re.`*`
     }

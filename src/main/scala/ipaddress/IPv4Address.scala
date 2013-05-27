@@ -1,7 +1,17 @@
 package ipaddress
 import scala.math
 
-class IPv4Address(address: Long) extends IPAddress {
+case class IPv4Address(address: Long) extends IPAddress {
+  override def toString = {
+    val o1 = address / (256 * 256 * 256)
+    val r1 = address - (o1 * 256 * 256 * 256)
+    val o2 = r1 / (256 * 256)
+    val r2 = r1 - ( o2 * 256 * 256 )
+    val o3 = r2 / 256
+    val r3 = r2 - ( o3 * 256 )
+    val o4 = r3
+    o1 + "." + o2 + "." + o3 + "." + o4
+  }
 
 }
 

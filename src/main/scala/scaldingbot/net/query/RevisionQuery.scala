@@ -4,7 +4,7 @@ package scaldingbot.net.query
  * Returns revisions for a given page, or the latest revision for each of several pages.
  * When using parameters marked as (enum), titles= must have only one title listed.
  */
-class Revision(val switches : Set[String], properties : Map[Property, String]) extends PropertyGroup{
+class RevisionQuery(val switches : Set[String], properties : Map[Property, String]) extends PropertyGroup{
   val prefix = "rv"
   val name = "revisions"
   def queryPairs = "prop" -> name :: switchpair :: properties.map(p => (prefix + p._1.name, p._2)).toList 

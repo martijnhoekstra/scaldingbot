@@ -4,9 +4,28 @@ import org.scalatest._
 import scaldingbot.AfCStats.SubmissionTemplate
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
+import scaldingbot.AfCStats.AfCPending
+import scaldingbot.wiki.Editor
+import scaldingbot.wiki.Editor
 
 class SubmissionTemplateTest extends FunSpec {
   describe("An SubmissionTemplate address") {
+    
+    it("should be able to parse a pending template") {
+      val pendingString = """{{AFC submission||nn|ts=20130420034914|u=71.94.235.210|ns=5|small=yes}}"""
+      SubmissionTemplate.getSubmissionData(pendingString).toList.headOption match {
+        
+        case Some(pending : AfCPending)  => {
+          val expectedSubmission = SubmissionTemplate.parseDateTime("20130420034914").get
+          assert(expectedSubmission == (pending.submitted), s"parsed submission date ${pending.submitted} not equal to expected submission date $expectedSubmission")
+          val expectedEditor = Editor.fromName("71.94.235.210")
+          assert(expectedEditor == pending.submitter, "submitter not equal to expected submitter")
+        }
+        case None => assert(false, "failed to parse template to AfC Pending")
+      }
+    }
+    
+    
     it("should be able to parse templates in an article") {
       val pagecontent = """
         {{AFC submission||nn|ts=20130420034914|u=71.94.235.210|ns=5|small=yes}}{{AFC submission|d|v|declinets=20130406050345|decliner=Anne Delong|ts=20130405194707|u=71.94.235.210|ns=5}}

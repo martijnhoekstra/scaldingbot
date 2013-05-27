@@ -5,25 +5,31 @@ import scala.collection.immutable.HashMap
 import scaldingbot.wiki.Editor
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
+import scaldingbot.wiki.Article
+import scaldingbot.wiki.RevisionHistory
+import scaldingbot.wiki.RevisionContent
+import scaldingbot.wiki.Revision
+import scala.annotation.tailrec
 
 object SubmissionTemplate {
    // submitted: {{AFC submission| | |ts=20130218044659       |u=Alex glen richards|ns=2}}
    // declined:  {{AFC submission|d|v|declinets=20130418162652|decliner=Fumitol    |ts=20130412055708|u=Alex glen richards|ns=5|small=yes}}
-  val pattern = new Regex("""\{\{AFC submission\|([^|]?)\|([^}]*)\}\}""", "status", "rest")
-  
+  val pattern = new Regex("""\{\{AFC submission\|([^|]?)\|([^|]*)\|([^}]*)\}\}""", "status", "rest")
   def getSubmissionData(content : String) = {
     val matches = pattern.findAllMatchIn(content)
-    for (pattern(letter, rest) <- pattern findAllIn content) yield {
-      val params = rest.split("""\|""").foldLeft(new HashMap[String, String]())((map, content) => {
+    val it = 
+    for (pattern(letter, reason, rest) <- pattern findAllIn content) yield {
+      val params = rest.split("""\|""").foldLeft(Map("reason"-> reason))((map, content) => {
         val kv = content.split("=")
         if (kv.length == 2) map + (kv(0) -> kv(1))
         else map
       })
       getSubmission(params, letter)
     }
+    it collect { case Some(submission) => submission }
   }
   
-  def getSubmission(params : Map[String, String], letter : String) = {
+   def getSubmission(params : Map[String, String], letter : String) = {
     val opending = getPending(params)
     letter match {
       case "" => opending
@@ -42,17 +48,18 @@ object SubmissionTemplate {
     else {
       val decliner = Editor.fromName(declinero.get)
       val declineTime = parseDateTime(declineTimestamp.get).get
+      val declineReason = params.get("reason")
       val declined = new AfCDeclined{
         val submission = pending
         val reviewer = decliner
         val reviewed = declineTime
+        val reason = declineReason
       }
       Some(declined)
     }
     
   }
   
-
   def getPending(params : Map[String, String]) : Option[AfCPending]= {
     val submitterName = params.get("u")
     val submittedTimestamp=params.get("ts")

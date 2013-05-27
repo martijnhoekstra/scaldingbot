@@ -2,7 +2,7 @@ package ipaddress
 
 import scala.runtime.RichChar
 
-class IPv6Address(address: BigInt) extends IPAddress {
+case class IPv6Address(address: BigInt) extends IPAddress {
 
   def getValue(ipstring: String) = {
 

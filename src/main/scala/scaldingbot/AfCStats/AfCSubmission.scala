@@ -15,7 +15,9 @@ trait AfCReviewed extends AfCSubmission {
   val reviewed : DateTime
 }
 
-trait AfCDeclined extends AfCReviewed
+trait AfCDeclined extends AfCReviewed {
+  val reason : Option[String]
+}
 trait AfCAccpeted extends AfCReviewed
 
 case class AfCPending(val submitter : Editor, val submitted : DateTime) extends AfCPendingLike
