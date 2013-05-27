@@ -7,6 +7,7 @@ import org.joda.time.DateTimeZone
 import scaldingbot.AfCStats.AfCPending
 import scaldingbot.wiki.Editor
 import scaldingbot.wiki.Editor
+import scaldingbot.AfCStats.AfCDeclined
 
 class SubmissionTemplateTest extends FunSpec {
   describe("An SubmissionTemplate address") {
@@ -26,6 +27,18 @@ class SubmissionTemplateTest extends FunSpec {
       }
     }
     
+    it("should be able to parse a declined template"){
+      val rejectedString = """{{AFC submission|d|nn|ts=20111222073416|u=122.180.105.90|ns=5}}"""
+        SubmissionTemplate.getSubmissionData(rejectedString).toList.headOption match {
+        case Some(rejected : AfCDeclined) => {
+          val expectedSubmission = SubmissionTemplate.parseDateTime("20111222073416").get
+          assert(expectedSubmission == rejected.submission.submitted)
+          val expectedWriter = Editor.fromName("122.180.105.90")
+          assert(expectedWriter == rejected.submission.submitter)
+        }
+        case _ => assert(false, "can't parse submission to decline")
+      }
+    }
     
     it("should be able to parse templates in an article") {
       val pagecontent = """

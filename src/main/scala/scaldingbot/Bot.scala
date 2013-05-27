@@ -14,7 +14,7 @@ object Bot {
     val articles = AfCStatsBot.getArticles.take(1000)
     val res = articles.collect { case Some(t) =>  basicstats(t) } 
     res.foreach(println)
-    val agg = res.foldLeft(Map.empty : Map[Option[String], Int])((t, m) => sumMergeMap(t, m._3))
+    val agg = res.foldLeft(Map.empty : Map[Option[String], Int])((t, m) => sumMergeMap(t, m._4))
     println(agg)
     val stop = 5 
   }
@@ -28,7 +28,7 @@ object Bot {
       val declines = a._2.values.foldLeft(Set.empty : Set[AfCDeclined])( (t, s) => t ++ s collect { case d : AfCDeclined => d } )
       val numdeclines = declines.count( _ => true)
       val reasons = declines.groupBy(d => d.reason).map(t =>( t._1,  t._2.count( _ => true) ))
-      (numedits, numdeclines, reasons)
+      (a._1.title, numedits, numdeclines, reasons)
     }
 
 }

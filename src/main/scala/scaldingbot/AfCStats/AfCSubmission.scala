@@ -11,8 +11,8 @@ trait AfCPendingLike extends AfCSubmission {
 
 trait AfCReviewed extends AfCSubmission {
   val submission : AfCPending
-  val reviewer : Editor
-  val reviewed : DateTime
+  val reviewer : Option[Editor]
+  val reviewed : Option[DateTime]
 }
 
 trait AfCDeclined extends AfCReviewed {
