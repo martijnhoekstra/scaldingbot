@@ -31,14 +31,12 @@ object SubmissionTemplate {
 
   def getSubmission(params: Map[String, String], letter: String) = {
     val opending = getPending(params)
-    letter match {
-      case "" => opending
-      case "d" => opending match {
+    if (letter == "") opending
+    else if (letter == "d" || letter == "D") opending match {
         case None => None
         case Some(pending) => getDecline(pending, params)
       }
-      case _ => None
-    }
+    else None
   }
 
   def getDecline(pending: AfCPending, params: Map[String, String]): Option[AfCDeclined] = {
