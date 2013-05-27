@@ -55,16 +55,12 @@ object SubmissionTemplate {
   }
 
   def getPending(params: Map[String, String]): Option[AfCPending] = {
-    val submitterName = params.get("u")
-    val submittedTimestamp = params.get("ts")
-    if (submitterName.isEmpty || submitterName.isEmpty) None
-    else {
-      val submitter = Editor.fromName(submitterName.get)
-      val submissionTime = parseDateTime(submittedTimestamp.get).get
-      val pending = new AfCPending(submitter, submissionTime)
-      Some(pending)
+    val submitterName = params.get("u").flatMap( s => Some(Editor.fromName(s) ))
+    val submittedTimestamp = params.get("ts").flatMap(s => parseDateTime(s))
+    (submitterName, submittedTimestamp) match {
+      case (Some(submitter), Some(submitted)) => Some (new AfCPending(submitter, submitted))
+      case _ => None
     }
-
   }
 
   def parseDateTime(datestring: String) = {

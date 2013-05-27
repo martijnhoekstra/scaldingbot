@@ -25,18 +25,18 @@ object AfCStatsBot extends Query {
           case head :: tail => head #:: _next(continue, tail, false)
           case Nil if first => empty
           case _ => {
-            val (nc, nl) = getIds(continue)
-            _next(nc, nl, true)
+            //TODO: Make async
+            val (next_continue, list) = getIds(continue)()
+            _next(next_continue, list, true)
           }
         }
       }
       
-      def getIds(continue : String) = {
-        val jsonstring = perform(queryparams ++ Map("cmcontinue" -> continue))
-        AfCParser.parseArticleIds(jsonstring)
-      }
+      def getIds(continue : String) = perform(queryparams ++ Map("cmcontinue" -> continue)).map( s => AfCParser.parseArticleIds(s))
+
       
-      val (continue, initial) = getIds("")
+      //TODO: Make async
+      val (continue, initial) = getIds("")()
       _next(continue, initial, true)
     }
   
@@ -47,7 +47,8 @@ object AfCStatsBot extends Query {
     val props = "ids" :: Nil
     val call = Map("list" -> list, "cmtitle" -> catDeclined, "cmprop" -> props.mkString("|"))
     val ids = articleIds(call)
-    val mylist = ids.map(buildArticle(_))
+    //TODO: Make async
+    val mylist = ids.map(buildArticle(_)())
     mylist  
   }
   
@@ -60,8 +61,8 @@ object AfCStatsBot extends Query {
         
     val params = Map[String, String]("pageids" -> id.toString()) ++ revparams
     val response = perform(params)
-    val revisions = buildRevisions(response, id)
-    revisions match {
+    val revisions = response.map(rr => buildRevisions(rr, id))
+    revisions collect {
       case None => None
       case Some((Some(continue), arts)) => ??? //do the query continue
       case Some((None, arts)) => Some(arts, associateSubmissionData(arts))
