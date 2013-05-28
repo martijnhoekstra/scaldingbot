@@ -1,6 +1,6 @@
 package scaldingbot.wiki
 
 trait RevisionContent {
-  self => Revision
+  self => Revision 
   val content : String
 }
