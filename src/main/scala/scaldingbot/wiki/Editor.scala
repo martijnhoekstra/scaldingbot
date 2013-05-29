@@ -1,6 +1,7 @@
 package scaldingbot.wiki
 
 import ipaddress._
+import language.implicitConversions
 
 abstract class Editor;
 abstract class IP extends Editor;
