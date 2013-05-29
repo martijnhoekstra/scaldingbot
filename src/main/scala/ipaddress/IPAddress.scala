@@ -5,8 +5,8 @@ trait IPAddress {
 }
 
 object IPAdress {
-  def isIp(candidate : String) = {
-    ???
+  def isValid(candidate : String) = {
+    IPv4Address.isValid(candidate) || IPv6Address.isValid(candidate) 
   }
   
 }

@@ -57,6 +57,11 @@ object IPv6Address {
       case None => None
     }
   }
+  
+  def isValid(candidate : String) = parseIp(candidate) match {
+    case Some(ip) => true
+    case _ => false
+  }
 
   def toBigInt(address: String): Option[BigInt] = {
     val splitted = address.split("""::""").toList

@@ -16,7 +16,7 @@ case class IPv4Address(address: Long) extends IPAddress {
 }
 
 object IPv4Address {
-  def isIpv4Address(address: String) = {
+  def isValid(address: String) = {
     toInt(address) match {
       case None => false
       case _ => true
