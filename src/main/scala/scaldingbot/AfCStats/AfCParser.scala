@@ -17,6 +17,7 @@ object AfCParser {
   
   def parseArticle(jsonstring : String) = {
     ???
+    //Todo: no idea why removing this fails tests yet...
   }
 
 }
