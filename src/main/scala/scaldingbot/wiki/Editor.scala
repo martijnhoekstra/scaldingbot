@@ -10,14 +10,9 @@ case class IP4 (address : IPv4Address) extends IP;
 case class Registered (id : Long, name : String) extends Editor;
 
 object Editor {
-  var cache : Map[String, Editor] = Map.empty
-  def fromName(username : String) = {
-    if (!cache.contains(username)) {
-      cache = cache + (username -> username)
-    }
-    cache(username)   
-  }
   
+  def fromName(username : String) : Editor = username   
+    
   implicit def IPv4Address2IP4(address : IPv4Address) : IP4 = {
     IP4(address)
   }
