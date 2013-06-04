@@ -35,6 +35,12 @@ class IPv4Test extends FunSpec {
       assert(IPv4Address.toInt("0.0.1.0") == Some(256))
       assert(IPv4Address.toInt("0.0.1.2") == Some(258))
     }
+    
+    it("should be able to format an IP address"){
+      assert(IPv4Address.parseIp("0.0.0.0").get.toString == "0.0.0.0")
+      assert(IPv4Address.parseIp("0.1.2.3").get.toString == "0.1.2.3")
+      assert(IPv4Address.parseIp("255.0.255.1").get.toString == "255.0.255.1")
+    }
 
   }
 }
