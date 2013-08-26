@@ -9,7 +9,7 @@ object Settings {
   val user = "Martijn Hoekstra"
   lazy val pass : String = ???
   
-  val authority = Authority(Host("en.wikipedia.org"))
+  val authority = Authority(Host("test.wikipedia.org"))
   val email = "MartijnHoekstra@gmail.com"
     
   val source = "https://github.com/martijnhoekstra/scaldingbot/"

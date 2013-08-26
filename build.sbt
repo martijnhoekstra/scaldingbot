@@ -15,9 +15,11 @@ scalacOptions := Seq("-encoding", "utf8",
                      "-Ywarn-adapted-args"
                     )
 
-resolvers += "spray repo" at "http://nightlies.spray.io"
-
-resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
+resolvers ++= Seq (
+  "spray nightlies" at "http://nightlies.spray.io",
+  "spray repo" at "http://repo.spray.io",
+  "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
+)
 
 libraryDependencies ++= Seq("com.typesafe.akka" %% "akka-actor" % "2.2.0",
                             "com.typesafe.akka" %% "akka-testkit" % "2.2.0",
