@@ -3,12 +3,12 @@ package scaldingbot.net.query
 import scala.collection.immutable.Set
 import scala.collection.mutable.HashSet
 
-class Info(val switches : scala.collection.immutable.Set[String], token : Option[TokenType], continue : Option[String]) extends PropertyGroup{
+class Info(val switches : scala.collection.immutable.Set[String], token : Option[TokenType], continue : Option[String]) {
   val prefix = "in"
   val name = "info"
 
   def queryPairs : List[(String, String)] =
-    switchpair ::
+    //switchpair ::
     token.map(t => ("token" , t.name) ).toList :::
     continue.map(c => ("continue" , c )).toList :::
     Nil

@@ -12,12 +12,12 @@ object Bot {
 
   def main(args: Array[String]): Unit = {
     
-    val articles = AfCStatsBot.getArticles
-    val res = articles.collect { case Some(t) =>  basicstats(t) }  
-    res.foreach(println)
-    val agg = res.foldLeft(Map.empty : Map[Option[String], Int])((t, m) => sumMergeMap(t, m._4))
+    //val articles = AfCStatsBot.getArticles
+    //val res = articles.collect { case Some(t) =>  basicstats(t) }  
+    //res.foreach(println)
+    // agg = res.foldLeft(Map.empty : Map[Option[String], Int])((t, m) => sumMergeMap(t, m._4))
     //.collect { case ( k, v ) if v > 1 => (k, v) }
-    println(agg)
+    //println(agg)
     val stop = 5 
   }
   

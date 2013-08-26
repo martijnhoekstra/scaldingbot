@@ -22,7 +22,6 @@ case class IPv6Address(address: BigInt) extends IPAddress {
     val highval = highbytes.zip(List.range(16, 0, -1)).foldLeft(BigInt(0))((s, i) => s + i._1 * i._2)
     val lowval = lowbytes.reverse.zip(List.range(0, 16, 1)).foldLeft(BigInt(0))((s, i) => s + i._1 * i._2)
     highval + lowval
-
   }
 }
 
@@ -32,9 +31,10 @@ object IPv6Address {
   }
 
   def hexChar2Int(char: Char) = {
-    if (char >= '0' && char <= '9') Some(char.byteValue - (new RichChar('0').byteValue))
+    val rchar = new RichChar(char)
+    if (char >= '0' && char <= '9') Some(rchar.byteValue - (new RichChar('0').byteValue))
     else if (char >= 'A' && char <= 'F') {
-      Some(10 + char.byteValue - (new RichChar('A').byteValue))
+      Some(10 + rchar.byteValue - (new RichChar('A').byteValue))
     } else None
   }
 
