@@ -34,10 +34,18 @@ class LoginSpec(_system: ActorSystem) extends TestKit(_system) with ImplicitSend
   }
   
   "The login system" must {
-    
-
     "be able to log in users through the API" in {
       ???
+      //val requester = system.actorOf(LoginProvider())
+      //requester ! LoginData("")
+      //expectMsgPF(10 seconds){
+      //  case r : LoginResponse => {
+      //    r.result should be("success")
+      //  }
+      //  case x => {
+      //    true should be(false)
+      //  }
+      //}
     }
 
   }

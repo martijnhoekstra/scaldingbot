@@ -9,13 +9,15 @@ import akka.actor.ActorSystem
 import scaldingbot.net.query.ApiPropertyValueSet
 import scaldingbot.net.query.ApiPropertySet
 import spray.httpx.SprayJsonSupport
+import spray.http.Uri.Authority
 
-class LoginAction(loginProps: ApiPropertySet)(implicit val system : ActorSystem) extends Action[LoginResponse]{
+class LoginAction(loginProps: ApiPropertySet, val authority_ : Authority = Settings.authority)
+                 (implicit val system : ActorSystem) extends Action[LoginResponse]{
   import SprayJsonSupport._
   import DefaultJsonProtocol._ 
   
   val actiontype = LoginActionType 
-  val authority = Settings.authority
   val defaultproperties = loginProps
   val rootformat = jsonFormat6(LoginResponse)
+  val authority = authority_
 }
