@@ -23,13 +23,13 @@ case class CookieJar(domainElement: String, subdomains : Map[String, CookieJar],
   @tailrec
   private def _getCookies(domain : List[String], accum : Set[SBHttpCookie]) : Set[SBHttpCookie] = {
     val now = new DateTime()
-    val directCookies = removeStale(cookies, now)
+    val totalCookies = removeStale(cookies, now) ++ accum
     domain match {
-      case Nil => directCookies
+      case Nil => totalCookies
       case head :: tail => {
         subdomains.get(head) match {
-          case None => directCookies
-          case Some(jar) => jar._getCookies(tail, directCookies)
+          case None => totalCookies
+          case Some(jar) => jar._getCookies(tail, totalCookies)
         }
       }
     }
@@ -40,7 +40,8 @@ case class CookieJar(domainElement: String, subdomains : Map[String, CookieJar],
   }
   
   def setCookie(cookie : SBHttpCookie, domain : String) = {
-    val domainelements = domain.split('.').toList.reverse
+    val trimmed = if (domain.indexOf('.') == 0) domain.substring(1) else domain
+    val domainelements = trimmed.split('.').toList.reverse
     _setCookie(domainelements, cookie)
   }
   
