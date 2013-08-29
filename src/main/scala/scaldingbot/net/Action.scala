@@ -77,8 +77,6 @@ trait Action[Response] {
   def storeCookies(domain: String) = {
     def res(r: HttpResponse) = {
       val cookieHeaders = r.headers collect { case c: `Set-Cookie` => c }
-      println("cookies: " + cookieHeaders)
-      println("response : " + r.entity.asString)
       for (c <- cookieHeaders.map(ch => ch.cookie)) {
         val cookiedomain = c.domain.getOrElse(domain)
         val ct = c.expires

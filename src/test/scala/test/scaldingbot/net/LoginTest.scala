@@ -40,44 +40,38 @@ class LoginSpec(_system: ActorSystem) extends TestKit(_system) with ImplicitSend
   import ExecutionContext.Implicits.global
   val credentials = LoginCredentials(Settings.user, Settings.pass)
 
-
   override def afterAll {
     TestKit.shutdownActorSystem(system)
   }
-
-
 
   "A login action " must {
     "log in" in {
       if (credentials.pass != "") {
 
-      val login = new LoginAction(ApiPropertySet())
-      val respf = login.perform(credentials.topset)
+        val login = new LoginAction(ApiPropertySet())
+        val respf = login.perform(credentials.topset)
 
-      val fin: Future[LoginResponseBody] = respf.flatMap(res => {
-        res.login match {
-          case success: LoginSuccess => {
-            println(success)
-            Future(success)
+        val fin: Future[LoginResponseBody] = respf.flatMap(res => {
+          res.login match {
+            case success: LoginSuccess => {
+              Future(success)
+            }
+            case fail: LoginFailure if fail.result == "NeedToken" => {
+              val token = LoginToken(fail.token.get)
+              for (rez <- login.perform(credentials.topset + token)) yield rez.login
+            }
+            case other => {
+              other should be(LoginSuccess)
+              Future { other }
+            }
           }
-          case fail: LoginFailure if fail.result == "NeedToken" => {
-            println("retry")
-            val token = LoginToken(fail.token.get)
-            for (rez <- login.perform(credentials.topset + token)) yield rez.login
-          }
-          case other => {
-            println("odd failure")
-            other should be(LoginSuccess)
-            Future { other }
-          }
+        })
+
+        whenReady(fin) {
+          case fin => fin.result should be("Success")
         }
-      })
 
-      whenReady(fin) {
-        case fin => fin.result should be("Success")
       }
-
-    }
     }
   }
 
