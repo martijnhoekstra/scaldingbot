@@ -88,6 +88,16 @@ trait Action[Response] {
     }
     res _
   }
+  
+  trait withCookies {
+    final var _jar = CookieJar("", Map.empty, Set.empty)
+    def sr(domain : String) = {
+      withCookies(cookiejar) ~>
+      sendReceive ~>
+      //Mind the side effects!
+      storeCookies(domain)
+    }
+  }
 
 }
 

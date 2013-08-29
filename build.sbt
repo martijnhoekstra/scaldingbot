@@ -21,8 +21,8 @@ resolvers ++= Seq (
   "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
 )
 
-libraryDependencies ++= Seq("com.typesafe.akka" %% "akka-actor" % "2.2.0",
-                            "com.typesafe.akka" %% "akka-testkit" % "2.2.0",
+libraryDependencies ++= Seq("com.typesafe.akka" %% "akka-actor" % "2.2.1",
+                            "com.typesafe.akka" %% "akka-testkit" % "2.2.1",
                             "com.github.nscala-time" %% "nscala-time" % "0.4.2",
 							"io.spray" % "spray-client" % "1.2-20130822",
 							"org.scalatest" % "scalatest_2.10" % "2.0.M6-SNAP21" % "test",
