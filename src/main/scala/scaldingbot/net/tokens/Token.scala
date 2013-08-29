@@ -1,8 +1,9 @@
 package scaldingbot.net.tokens
 
-import scaldingbot.net.query.ApiPropertyValueSet
+import scaldingbot.net.ApiPropertyValueSet
+import scaldingbot.net.ApiProperty
 
-abstract sealed class Token(val name : String){
+abstract sealed class Token(val name : String) extends ApiProperty{
   val value : String
 }
 
@@ -20,6 +21,7 @@ case class ProtectToken(val value : String) extends Token("protect")
 case class SetGlobalAccountStatusToken(val value : String) extends Token("setglobalaccountstatus")
 case class UnblockToken(val value : String) extends Token("unblock")
 case class WatchToken(val value : String) extends Token("watch")
+case class LoginToken(val value : String) extends Token("lgtoken")
 
 trait TokenType extends ApiPropertyValueSet {
   val name = "type"

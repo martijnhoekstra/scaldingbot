@@ -13,12 +13,12 @@ import spray.http.Uri.Host
 import spray.http.Uri.Path
 import spray.http.Uri.{ Query => SQuery }
 import spray.json.pimpString
-import scaldingbot.net.query.ApiPropertySet
+import scaldingbot.net.ApiPropertySet
 import spray.json._
 import DefaultJsonProtocol._
 import scaldingbot.net.CookieJar
 import scaldingbot.net.SBHttpCookie
-import org.joda.time.{DateTime => JT}
+import spray.http.DateTime
 
 class CookieSpec extends WordSpecLike with ScalaFutures with Matchers {
   val jar = CookieJar("", Map.empty, Set.empty)
@@ -50,7 +50,7 @@ class CookieSpec extends WordSpecLike with ScalaFutures with Matchers {
     }
     
     "not return a cookie that has expired" in {
-      val cookie = SBHttpCookie("myname", "myvalue", Some(new JT()))
+      val cookie = SBHttpCookie("myname", "myvalue", Some(DateTime.now))
       val newjar = jar.setCookie(cookie, "example.org")
       val fetched = newjar.cookiesfor("www.example.org")
       fetched.count(c => true) should be(0)

@@ -1,7 +1,6 @@
 package scaldingbot.net
 
 import scaldingbot.settings.Settings
-import scaldingbot.net.query.ApiPropertyValueSet
 import spray.http._
 import spray.client.pipelining._
 import scala.concurrent.Future
@@ -15,11 +14,9 @@ import spray.http.Uri.{ Query => SprayQuery }
 import spray.http.Uri.Authority
 import scala.collection.mutable.MutableList
 import scaldingbot.settings.Settings
-import scaldingbot.net.query.ApiPropertySet
 import spray.httpx.SprayJsonSupport
 import spray.http.HttpHeaders.Cookie
 import spray.http.HttpHeaders.`Set-Cookie`
-import org.joda.time.{ DateTime => JT }
 
 trait Action[Response] {
   import system.dispatcher
@@ -33,7 +30,7 @@ trait Action[Response] {
   var cookiejar: CookieJar = CookieJar("", Map.empty, Set.empty)
   implicit val rootformat: RootJsonFormat[Response]
 
-  def createRequest(queryparams: List[(String, String)], body: Option[Array[Byte]] = None) = {
+  def createRequest(queryparams: Seq[(String, String)], body: Option[Array[Byte]] = None) = {
     def e(part: String) = URLEncoder.encode(part, "UTF-8")
     val querystring = queryparams.map(i => s"${e(i._1)}=${e(i._2)}").mkString("?", "&", "")
     val query = SprayQuery(queryparams.toMap)
@@ -48,6 +45,7 @@ trait Action[Response] {
     val qpars = params ++ defaultproperties ++ Action.defaultParams + actiontype
     val request = createRequest(qpars.formatted)
     val domain = request.uri.authority.host.address
+    println(request)
     val pipeline: HttpRequest => Future[Response] = (
       addHeader("User-Agent", useragent) ~>
       withCookies(cookiejar) ~>
@@ -66,7 +64,7 @@ trait Action[Response] {
   def withCookies(jar: CookieJar) = {
     def res(r: HttpRequest) = {
       val mycookies = jar.cookiesfor(r.uri.authority.host.address)
-      val realcookies = mycookies.map(mk => HttpCookie(mk.name, mk.value, mk.expires.map(dt => DateTime(dt.toInstant().getMillis()))))
+      val realcookies = mycookies.map(mk => HttpCookie(mk.name, mk.value, mk.expires))
       val cookieheader = Cookie(realcookies.toList)
       addHeader(cookieheader)(r)
     }
@@ -79,24 +77,16 @@ trait Action[Response] {
   def storeCookies(domain: String) = {
     def res(r: HttpResponse) = {
       val cookieHeaders = r.headers collect { case c: `Set-Cookie` => c }
+      println("cookies: " + cookieHeaders)
+      println("response : " + r.entity.asString)
       for (c <- cookieHeaders.map(ch => ch.cookie)) {
         val cookiedomain = c.domain.getOrElse(domain)
-        val ct = c.expires.map(ex => new JT(ex))
+        val ct = c.expires
         cookiejar = cookiejar.setCookie(SBHttpCookie(c.name, c.content, ct), cookiedomain)
       }
       r
     }
     res _
-  }
-  
-  trait withCookies {
-    final var _jar = CookieJar("", Map.empty, Set.empty)
-    def sr(domain : String) = {
-      withCookies(cookiejar) ~>
-      sendReceive ~>
-      //Mind the side effects!
-      storeCookies(domain)
-    }
   }
 
 }

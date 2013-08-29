@@ -6,18 +6,19 @@ import scaldingbot.net.ActionType
 import scaldingbot.net.LoginActionType
 import scaldingbot.settings.Settings
 import akka.actor.ActorSystem
-import scaldingbot.net.query.ApiPropertyValueSet
-import scaldingbot.net.query.ApiPropertySet
+import scaldingbot.net.ApiPropertyValueSet
+import scaldingbot.net.ApiPropertySet
 import spray.httpx.SprayJsonSupport
 import spray.http.Uri.Authority
+import scaldingbot.net.login.LoginResponseJsonProtocol.LoginResponse
 
 class LoginAction(loginProps: ApiPropertySet, val authority_ : Authority = Settings.authority)
                  (implicit val system : ActorSystem) extends Action[LoginResponse]{
   import SprayJsonSupport._
-  import DefaultJsonProtocol._ 
-  
+    
   val actiontype = LoginActionType 
   val defaultproperties = loginProps
-  val rootformat = jsonFormat6(LoginResponse)
+  import LoginResponseJsonProtocol._
+  val rootformat = jsonFormat1(LoginResponseJsonProtocol.LoginResponse)
   val authority = authority_
 }

@@ -9,7 +9,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scaldingbot.net.Action
 import scaldingbot.net.TokensActionType
 import scala.concurrent.ExecutionContext
-import scaldingbot.net.query.ApiPropertySet
+import scaldingbot.net.ApiPropertySet
 import spray.json.DefaultJsonProtocol
 import spray.httpx.SprayJsonSupport
 import scaldingbot.settings.Settings

@@ -1,9 +1,9 @@
 package scaldingbot.net.login
 
-import scaldingbot.net.query.ApiPropertyValueSet
+import scaldingbot.net.ApiPropertyValueSet
 import scala.concurrent.ExecutionContext
 import akka.actor.Actor
-import scaldingbot.net.query.ApiPropertySet
+import scaldingbot.net.ApiPropertySet
 import akka.actor.Props
 import akka.actor.ActorSystem
 
@@ -17,6 +17,7 @@ class LoginProvider(action : LoginAction) extends Actor {
     case cred : LoginCredentials => {
       import ExecutionContext.Implicits.global
       implicit val system = context.system
+      
       //TODO: Keep login action alive?
       //val login = new LoginAction(properties)
       //login.perform(properties)

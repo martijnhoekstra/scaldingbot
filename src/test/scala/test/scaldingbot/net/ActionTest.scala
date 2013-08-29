@@ -13,7 +13,7 @@ import spray.http.Uri.Host
 import spray.http.Uri.Path
 import spray.http.Uri.{Query => SQuery}
 import spray.json.pimpString
-import scaldingbot.net.query.ApiPropertySet
+import scaldingbot.net.ApiPropertySet
 import spray.json._
 import DefaultJsonProtocol._
 

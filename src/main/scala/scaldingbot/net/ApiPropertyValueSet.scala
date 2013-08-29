@@ -1,4 +1,6 @@
-package scaldingbot.net.query
+package scaldingbot.net
+
+import scala.Option.option2Iterable
 
 trait ApiPropertyValueSet{
   val name : String
@@ -14,7 +16,7 @@ trait ApiProperty {
   implicit def toApiPropertyValueSet = GenericApiPropertyValueSet(name, Set(value))
 }
 
-class ApiPropertySet(parameters : List[ApiPropertyValueSet]){
+class ApiPropertySet(parameters : Seq[ApiPropertyValueSet]){
   val properymap : Map[String, Set[String]] = toMap(parameters)
   
   def formatted = {
@@ -49,7 +51,7 @@ class ApiPropertySet(parameters : List[ApiPropertyValueSet]){
     source.foldLeft(add)((res, a) => res ++ a)
   }
   
-  def toMap(list : List[ApiPropertyValueSet]) = {
+  def toMap(list : Seq[ApiPropertyValueSet]) = {
     val nmap : Map[String, Set[String]] = Map.empty
     list.foldLeft(nmap)((m, apvs) => {
       val s = mergeinall(m.get(apvs.name), apvs.values)
@@ -63,4 +65,8 @@ object ApiPropertySet {
    val it = parameters.map(p => GenericApiPropertyValueSet(p._1, p._2))
    new ApiPropertySet(it.toList)
  }
+ 
+ def apply() : ApiPropertySet = apply(Map[String, Set[String]]())
+ 
+ def apply(props : Seq[ApiPropertyValueSet]) = new ApiPropertySet(props)
 }

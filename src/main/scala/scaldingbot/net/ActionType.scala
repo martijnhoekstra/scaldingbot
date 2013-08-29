@@ -1,6 +1,6 @@
 package scaldingbot.net
 
-import scaldingbot.net.query.ApiProperty
+import scaldingbot.net.ApiProperty
 
 abstract sealed class ActionType(val value : String) extends ApiProperty{
   val name = "action"

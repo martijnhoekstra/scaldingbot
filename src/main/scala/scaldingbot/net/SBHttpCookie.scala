@@ -1,9 +1,10 @@
 package scaldingbot.net
 
-import org.joda.time.DateTime
+
 import spray.http.HttpHeaders.Host
 import spray.http.Uri
 import scala.annotation.tailrec
+import spray.http.DateTime
 
 /**
  * This is a *basic* CookieJar implementation. It will happily accept cookies with invalid characters
@@ -22,7 +23,7 @@ case class CookieJar(domainElement: String, subdomains : Map[String, CookieJar],
   
   @tailrec
   private def _getCookies(domain : List[String], accum : Set[SBHttpCookie]) : Set[SBHttpCookie] = {
-    val now = new DateTime()
+    val now = DateTime.now
     val totalCookies =  accum ++ removeStale(cookies, now)
     domain match {
       case Nil => totalCookies
@@ -46,7 +47,7 @@ case class CookieJar(domainElement: String, subdomains : Map[String, CookieJar],
   }
   
   private def _setCookie(domain : List[String], cookie : SBHttpCookie) : CookieJar = {
-    val now = new DateTime()
+    val now = DateTime.now
       domain match {
       case Nil => {
         val newcookies =  removeStale(cookies, now).filterNot(c => c.name == cookie.name) + cookie
@@ -65,7 +66,7 @@ case class CookieJar(domainElement: String, subdomains : Map[String, CookieJar],
     cookies.filter(c => {
       c.expires match {
         case None => true
-        case Some(datetime) if datetime.isAfter(cutoff) => true
+        case Some(datetime) if datetime > cutoff => true
         case _ => false
       }
     })

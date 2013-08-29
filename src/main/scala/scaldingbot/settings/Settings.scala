@@ -7,7 +7,7 @@ import spray.http.Uri.Host
 
 object Settings {
   val user = "Martijn Hoekstra"
-  lazy val pass : String = ???
+  lazy val pass : String = ""
   
   val authority = Authority(Host("test.wikipedia.org"))
   val email = "MartijnHoekstra@gmail.com"

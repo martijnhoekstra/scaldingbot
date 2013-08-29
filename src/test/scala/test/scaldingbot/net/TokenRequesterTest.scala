@@ -14,7 +14,7 @@ import scala.concurrent.duration._
 import org.scalatest.Matchers
 import scaldingbot.net.tokens.EditToken
 import scaldingbot.net.tokens.TokenRequestAction
-import scaldingbot.net.query.ApiPropertySet
+import scaldingbot.net.ApiPropertySet
 import scaldingbot.net.tokens.TokenType
 import org.scalatest.concurrent.Futures
 import org.scalatest.concurrent.ScalaFutures

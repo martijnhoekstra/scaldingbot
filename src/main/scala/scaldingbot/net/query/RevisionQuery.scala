@@ -1,5 +1,7 @@
 package scaldingbot.net.query
 
+import scaldingbot.net.ApiPropertyValueSet
+
 /**
  * Returns revisions for a given page, or the latest revision for each of several pages.
  * When using parameters marked as (enum), titles= must have only one title listed.
