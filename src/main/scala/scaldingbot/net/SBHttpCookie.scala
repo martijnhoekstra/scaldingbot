@@ -23,7 +23,7 @@ case class CookieJar(domainElement: String, subdomains : Map[String, CookieJar],
   @tailrec
   private def _getCookies(domain : List[String], accum : Set[SBHttpCookie]) : Set[SBHttpCookie] = {
     val now = new DateTime()
-    val totalCookies = removeStale(cookies, now) ++ accum
+    val totalCookies =  accum ++ removeStale(cookies, now)
     domain match {
       case Nil => totalCookies
       case head :: tail => {
