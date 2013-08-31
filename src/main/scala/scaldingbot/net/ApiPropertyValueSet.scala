@@ -1,6 +1,9 @@
 package scaldingbot.net
 
 import scala.Option.option2Iterable
+import spray.http.MultipartFormData
+import spray.http.BodyPart
+import spray.http.FormData
 
 trait ApiPropertyValueSet{
   val name : String
@@ -21,6 +24,14 @@ class ApiPropertySet(parameters : Seq[ApiPropertyValueSet]){
   
   def formatted = {
     parameters.map(p => (p.name, p.values.mkString("|")))
+  }
+  
+  def asFormMultipart = {
+    ???
+  }
+  
+  def asFormUrlEncoded = {
+    FormData(formatted.toList.toMap)
   }
   
   def +(property : ApiProperty) = {

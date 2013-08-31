@@ -30,7 +30,7 @@ trait Action[Response] {
   var cookiejar: CookieJar = CookieJar("", Map.empty, Set.empty)
   implicit val rootformat: RootJsonFormat[Response]
 
-  def createRequest(queryparams: Seq[(String, String)], body: Option[Array[Byte]] = None) = {
+  def createRequest[T](queryparams: Seq[(String, String)], body: Option[T] = None)(implicit evidence: spray.httpx.marshalling.Marshaller[T]) = {
     def e(part: String) = URLEncoder.encode(part, "UTF-8")
     val querystring = queryparams.map(i => s"${e(i._1)}=${e(i._2)}").mkString("?", "&", "")
     val query = SprayQuery(queryparams.toMap)
@@ -43,7 +43,7 @@ trait Action[Response] {
   def perform(params: ApiPropertySet) = {
 
     val qpars = params ++ defaultproperties ++ Action.defaultParams + actiontype
-    val request = createRequest(qpars.formatted)
+    val request = createRequest(Nil, Some(qpars.asFormUrlEncoded))
     val domain = request.uri.authority.host.address
     println(request)
     val pipeline: HttpRequest => Future[Response] = (
