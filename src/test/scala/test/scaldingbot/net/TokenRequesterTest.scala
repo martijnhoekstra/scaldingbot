@@ -21,26 +21,22 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.Span
 import org.scalatest.time.Seconds
 
-
-
 class TokenSpec(_system: ActorSystem) extends TestKit(_system) with ImplicitSender
   with WordSpecLike with Matchers with BeforeAndAfterAll with ScalaFutures {
   implicit val defaultPatience = PatienceConfig(timeout = Span(10, Seconds), interval = Span(1, Seconds))
   def this() = this(ActorSystem("TokenSpec"))
-  
-  
+
   override def afterAll {
     TestKit.shutdownActorSystem(system)
   }
-  
+
   "A token requester" must {
-    
 
     "get valid edit tokens from English Wikipedia" in {
       val requester = system.actorOf(TokenRequester())
-      requester ! EditToken("")
-      expectMsgPF(10 seconds){
-        case e : EditToken => {
+      requester ! EditToken("-")
+      expectMsgPF(30 seconds) {
+        case e: EditToken => {
           e.value should endWith("+\\")
         }
         case x => {
@@ -51,18 +47,19 @@ class TokenSpec(_system: ActorSystem) extends TestKit(_system) with ImplicitSend
 
   }
 
-  
   "A token request action" should {
     "get valid edit tokens" in {
       val reqaction = TokenRequestAction(system)
       object ttype extends TokenType { val values = Set("edit") }
       val resp = reqaction.perform(new ApiPropertySet(ttype :: Nil))
       whenReady(resp) {
-        res => {
-          res.tokens.edittoken should endWith("+\\")
-        }
+        res =>
+          {
+            res.tokens.length should be > (0)
+            res.tokens.head.value should endWith("+\\")
+          }
       }
     }
   }
-  
+
 }

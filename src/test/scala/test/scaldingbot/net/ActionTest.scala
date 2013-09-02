@@ -36,7 +36,7 @@ class ActionSpec extends WordSpecLike with ScalaFutures with Matchers {
 
   "An action" must {
 
-    "be able to create a valid GET request on the English Wikipedia API" in {
+    "be able to create a valid request object from on the Test.Wikipedia's API" in {
       val data = FormData(Map("action" -> "query", "list" -> "exturlusage", "euquery" -> "slashdot.org"))
 
       val get = TestAction.createRequest(Nil, Some(data))

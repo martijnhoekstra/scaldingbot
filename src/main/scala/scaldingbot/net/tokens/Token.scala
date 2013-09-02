@@ -8,10 +8,10 @@ abstract sealed class Token(val name : String) extends ApiProperty{
 }
 
 case class EditToken(val value : String) extends Token("edit")
-case class BlokToken(val value : String) extends Token("block")
+case class BlockToken(val value : String) extends Token("block")
 case class CentralAuthToken(val value : String) extends Token("centralauth")
 case class DeleteToken(val value : String) extends Token("delete")
-case class DeleteGlobalAccontToken(val value : String) extends Token("deleteglobalaccount")
+case class DeleteGlobalAccountToken(val value : String) extends Token("deleteglobalaccount")
 case class EmailToken(val value : String) extends Token("email")
 case class ImportToken(val value : String) extends Token("import")
 case class MoveToken(val value : String) extends Token("move")
@@ -22,7 +22,36 @@ case class SetGlobalAccountStatusToken(val value : String) extends Token("setglo
 case class UnblockToken(val value : String) extends Token("unblock")
 case class WatchToken(val value : String) extends Token("watch")
 case class LoginToken(val value : String) extends Token("lgtoken")
+case object DummyToken extends Token(""){
+  val value = ""
+}
 
 trait TokenType extends ApiPropertyValueSet {
   val name = "type"
+}
+
+object Token {
+  def apply(name : String, value_ : String) : Token = {
+    name match {
+      case "edit" => EditToken(value_)
+      case "block" => BlockToken(value_)
+      case "centralauth" => CentralAuthToken(value_)
+      case "delete" => DeleteToken(value_)
+      case "deleteglobalaccount" => DeleteGlobalAccountToken(value_)
+      case "email" => EmailToken(value_)
+      case "import" => ImportToken(value_)
+      case "move" => MoveToken(value_)
+      case "options" => OptionsToken(value_)
+      case "patrol" => PatrolToken(value_)
+      case "protect" => ProtectToken(value_)
+      case "setglobalaccountstatus" => SetGlobalAccountStatusToken(value_)
+      case "unblock" => UnblockToken(value_)
+      case "watch" => WatchToken(value_)
+      case "lgtoken" => LoginToken(value_)
+      case x => {
+        case object InvalidToken extends Token(x) { val value = value_}
+        InvalidToken
+      }
+    }
+  }
 }

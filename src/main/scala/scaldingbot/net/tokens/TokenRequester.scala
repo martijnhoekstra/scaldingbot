@@ -13,24 +13,43 @@ import scaldingbot.net.ApiPropertySet
 import spray.json.DefaultJsonProtocol
 import spray.httpx.SprayJsonSupport
 import scaldingbot.settings.Settings
+import scala.concurrent.Future
+import scala.util.Success
+import scala.util.Failure
+import akka.actor.Stash
 
 object TokenRequester {
   def apply() = Props[TokenRequester]
 }
 
-class TokenRequester extends Actor {
+class TokenRequester extends Actor  with Stash {
   import ExecutionContext.Implicits.global
-  
+
   val req = TokenRequestAction(context.system)
 
+  var cache: Map[String, Token] = Map.empty
+
   def receive = {
+    case seq : Seq[Token] => {
+      this.cache = this.cache ++ seq.map(t => t.name -> t).toMap
+      unstashAll()
+    }
     case t: Token => {
-      val oldsender = sender
-      object ttype extends TokenType { val values = Set(t.name) }
-      val fresp = req.perform(new ApiPropertySet(ttype :: Nil))
-      for (resp <- fresp ) {
-        val editToken = resp.tokens.edittoken
-        oldsender ! EditToken(editToken)
+      val cached = cache.get(t.name)
+      cached match {
+        case Some(token) if token.value == "" => println("cached token is dummy token"); stash()
+        case Some(token) if token.value != t.value => println("cached token is what we need"); sender ! token
+        case _ => {
+          stash()
+          cache = cache + (t.name -> Token(t.name, ""))
+          object ttype extends TokenType { val values = Set(t.name) }
+          val ftok = req.perform(new ApiPropertySet(ttype :: Nil)).map(tr => tr.tokens)
+          ftok.onSuccess {
+            case seq: Seq[Token] => {
+              self ! seq
+            }
+          }
+        }
       }
     }
   }
