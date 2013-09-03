@@ -37,8 +37,8 @@ class TokenRequester extends Actor  with Stash {
     case t: Token => {
       val cached = cache.get(t.name)
       cached match {
-        case Some(token) if token.value == "" => println("cached token is dummy token"); stash()
-        case Some(token) if token.value != t.value => println("cached token is what we need"); sender ! token
+        case Some(token) if token.value == "" => stash()
+        case Some(token) if token.value != t.value => sender ! token
         case _ => {
           stash()
           cache = cache + (t.name -> Token(t.name, ""))

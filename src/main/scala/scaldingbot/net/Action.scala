@@ -45,7 +45,6 @@ trait Action[Response] {
     val qpars = params ++ defaultproperties ++ Action.defaultParams + actiontype
     val request = createRequest(Nil, Some(qpars.asFormUrlEncoded))
     val domain = request.uri.authority.host.address
-    println(request)
     val pipeline: HttpRequest => Future[Response] = (
       addHeader("User-Agent", useragent) ~>
       withCookies(cookiejar) ~>

@@ -22,9 +22,6 @@ case class SetGlobalAccountStatusToken(val value : String) extends Token("setglo
 case class UnblockToken(val value : String) extends Token("unblock")
 case class WatchToken(val value : String) extends Token("watch")
 case class LoginToken(val value : String) extends Token("lgtoken")
-case object DummyToken extends Token(""){
-  val value = ""
-}
 
 trait TokenType extends ApiPropertyValueSet {
   val name = "type"
