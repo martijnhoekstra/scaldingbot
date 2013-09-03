@@ -78,8 +78,7 @@ trait Action[Response] {
       val cookieHeaders = r.headers collect { case c: `Set-Cookie` => c }
       for (c <- cookieHeaders.map(ch => ch.cookie)) {
         val cookiedomain = c.domain.getOrElse(domain)
-        val ct = c.expires
-        cookiejar = cookiejar.setCookie(SBHttpCookie(c.name, c.content, ct), cookiedomain)
+        cookiejar = cookiejar.setCookie(c, cookiedomain)
       }
       r
     }

@@ -5,6 +5,7 @@ import spray.http.HttpHeaders.Host
 import spray.http.Uri
 import scala.annotation.tailrec
 import spray.http.DateTime
+import spray.http.HttpCookie
 
 /**
  * This is a *basic* CookieJar implementation. It will happily accept cookies with invalid characters
@@ -15,14 +16,14 @@ import spray.http.DateTime
  *  Also, cookie paths, ports, http directives, and secure directives are completely ignored.
  *  Emptor caveat. 
  */
-case class CookieJar(domainElement: String, subdomains : Map[String, CookieJar], cookies : Set[SBHttpCookie]){
+case class CookieJar(domainElement: String, subdomains : Map[String, CookieJar], cookies : Set[HttpCookie]){
   def cookiesfor(domain : String) = {
     val domainelements = domain.split('.').toList.reverse
     _getCookies(domainelements, Set.empty)
   }
   
   @tailrec
-  private def _getCookies(domain : List[String], accum : Set[SBHttpCookie]) : Set[SBHttpCookie] = {
+  private def _getCookies(domain : List[String], accum : Set[HttpCookie]) : Set[HttpCookie] = {
     val now = DateTime.now
     val totalCookies =  accum ++ removeStale(cookies, now)
     domain match {
@@ -40,13 +41,13 @@ case class CookieJar(domainElement: String, subdomains : Map[String, CookieJar],
     cookiesfor(domain).mkString("; ")
   }
   
-  def setCookie(cookie : SBHttpCookie, domain : String) = {
+  def setCookie(cookie : HttpCookie, domain : String) = {
     val trimmed = if (domain.indexOf('.') == 0) domain.substring(1) else domain
     val domainelements = trimmed.split('.').toList.reverse
     _setCookie(domainelements, cookie)
   }
   
-  private def _setCookie(domain : List[String], cookie : SBHttpCookie) : CookieJar = {
+  private def _setCookie(domain : List[String], cookie : HttpCookie) : CookieJar = {
     val now = DateTime.now
       domain match {
       case Nil => {
@@ -62,7 +63,7 @@ case class CookieJar(domainElement: String, subdomains : Map[String, CookieJar],
     
   }
   
-  def removeStale(cookies : Set[SBHttpCookie], cutoff : DateTime) = {
+  def removeStale(cookies : Set[HttpCookie], cutoff : DateTime) = {
     cookies.filter(c => {
       c.expires match {
         case None => true
@@ -73,6 +74,3 @@ case class CookieJar(domainElement: String, subdomains : Map[String, CookieJar],
   }
 }
 
-case class SBHttpCookie(name : String, value : String, expires : Option[DateTime]) {
-  override def toString = name + "=" + value
-}
