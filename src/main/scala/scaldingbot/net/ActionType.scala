@@ -8,3 +8,4 @@ abstract sealed class ActionType(val value : String) extends ApiProperty{
 case object TokensActionType extends ActionType("tokens")
 case object QueryActionType extends ActionType("query")
 case object LoginActionType extends ActionType("login")
+case object EditActionType extends ActionType("edit")

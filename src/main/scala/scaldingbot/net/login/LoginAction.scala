@@ -12,7 +12,7 @@ import spray.httpx.SprayJsonSupport
 import spray.http.Uri.Authority
 import scaldingbot.net.login.LoginResponseJsonProtocol.LoginResponse
 
-class LoginAction(loginProps: ApiPropertySet, val authority_ : Authority = Settings.authority)
+class LoginAction(loginProps: ApiPropertySet, val authority : Authority = Settings.authority)
                  (implicit val system : ActorSystem) extends Action[LoginResponse]{
   import SprayJsonSupport._
     
@@ -20,5 +20,4 @@ class LoginAction(loginProps: ApiPropertySet, val authority_ : Authority = Setti
   val defaultproperties = loginProps
   import LoginResponseJsonProtocol._
   val rootformat = jsonFormat1(LoginResponseJsonProtocol.LoginResponse)
-  val authority = authority_
 }

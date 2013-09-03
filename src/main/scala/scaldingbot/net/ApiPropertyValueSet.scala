@@ -80,4 +80,6 @@ object ApiPropertySet {
  def apply() : ApiPropertySet = apply(Map[String, Set[String]]())
  
  def apply(props : Seq[ApiPropertyValueSet]) = new ApiPropertySet(props)
+ 
+ def empty = apply()
 }

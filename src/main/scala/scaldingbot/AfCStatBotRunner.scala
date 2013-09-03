@@ -11,7 +11,7 @@ import scaldingbot.AfCStats.AfCDeclined
 object Bot {
 
   def main(args: Array[String]): Unit = {
-    
+    /*
     //val articles = AfCStatsBot.getArticles
     //val res = articles.collect { case Some(t) =>  basicstats(t) }  
     //res.foreach(println)
@@ -32,5 +32,7 @@ object Bot {
       val reasons = declines.groupBy(d => d.reason).map(t =>( t._1,  t._2.count( _ => true) ))
       (a._1.title, numedits, numdeclines, reasons)
     }
-
+    * 
+    */
+  }
 }

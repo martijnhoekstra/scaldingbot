@@ -17,6 +17,8 @@ import scaldingbot.net.ApiPropertySet
 import spray.json._
 import DefaultJsonProtocol._
 import spray.http.FormData
+import akka.testkit._
+import org.scalatest.BeforeAndAfterAll
 
 object TestAction extends Action[Boolean] {
   val actiontype = TokensActionType
@@ -31,15 +33,20 @@ object TestAction extends Action[Boolean] {
 
 }
 
-class ActionSpec extends WordSpecLike with ScalaFutures with Matchers {
+class ActionSpec(_system: ActorSystem) extends TestKit(_system) with WordSpecLike with ScalaFutures with Matchers with BeforeAndAfterAll {
   implicit val defaultPatience = PatienceConfig(timeout = Span(10, Seconds), interval = Span(1, Seconds))
 
+    override def afterAll {
+    TestKit.shutdownActorSystem(system)
+  }
+  
+  
   "An action" must {
 
     "be able to create a valid request object from on the Test.Wikipedia's API" in {
       val data = FormData(Map("action" -> "query", "list" -> "exturlusage", "euquery" -> "slashdot.org"))
 
-      val get = TestAction.createRequest(Nil, Some(data))
+      val get = TestAction.createRequest(Some(data))
       get.uri.path should be(Path("/w/api.php"))
       get.uri.query should be(Nil)
       get.headers should be(Nil)
@@ -53,7 +60,7 @@ class ActionSpec extends WordSpecLike with ScalaFutures with Matchers {
       }
 
     }
-    //TestAction.system.shutdown()
+
   }
 
 }

@@ -35,7 +35,7 @@ trait Action[Response] {
   implicit val rootformat: RootJsonFormat[Response]
 
   def createRequest[T]( body: Option[T] = None)(implicit evidence: spray.httpx.marshalling.Marshaller[T]) = {
-    val uri = Uri(scheme, authority)
+    val uri = Uri(scheme, authority, Action.path)
     Post(uri, body)
   }
 
