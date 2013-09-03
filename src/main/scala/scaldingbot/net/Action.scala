@@ -1,22 +1,26 @@
 package scaldingbot.net
 
-import scaldingbot.settings.Settings
-import spray.http._
-import spray.client.pipelining._
+import scala.collection.mutable.MutableList
 import scala.concurrent.Future
 import akka.actor.ActorSystem
-import java.net
-import java.net.URLEncoder
-import spray.json._
-import DefaultJsonProtocol._
-import spray.http.Uri.Path
-import spray.http.Uri.{ Query => SprayQuery }
-import spray.http.Uri.Authority
-import scala.collection.mutable.MutableList
 import scaldingbot.settings.Settings
-import spray.httpx.SprayJsonSupport
+import spray.client.pipelining.Post
+import spray.client.pipelining.WithTransformerConcatenation
+import spray.client.pipelining.addHeader
+import spray.client.pipelining.sendReceive
+import spray.client.pipelining.unmarshal
+import spray.http.HttpCookie
+import spray.http.HttpHeader
 import spray.http.HttpHeaders.Cookie
 import spray.http.HttpHeaders.`Set-Cookie`
+import spray.http.HttpRequest
+import spray.http.HttpResponse
+import spray.http.Uri
+import spray.http.Uri.Authority
+import spray.http.Uri.Path
+import spray.httpx.SprayJsonSupport.sprayJsonUnmarshaller
+import spray.json.RootJsonFormat
+import spray.httpx.SprayJsonSupport
 
 trait Action[Response] {
   import system.dispatcher
@@ -30,20 +34,16 @@ trait Action[Response] {
   var cookiejar: CookieJar = CookieJar("", Map.empty, Set.empty)
   implicit val rootformat: RootJsonFormat[Response]
 
-  def createRequest[T](queryparams: Seq[(String, String)], body: Option[T] = None)(implicit evidence: spray.httpx.marshalling.Marshaller[T]) = {
-    def e(part: String) = URLEncoder.encode(part, "UTF-8")
-    val querystring = queryparams.map(i => s"${e(i._1)}=${e(i._2)}").mkString("?", "&", "")
-    val query = SprayQuery(queryparams.toMap)
-    val uri = Uri(scheme, authority, Action.path, query, None)
+  def createRequest[T]( body: Option[T] = None)(implicit evidence: spray.httpx.marshalling.Marshaller[T]) = {
+    val uri = Uri(scheme, authority)
     Post(uri, body)
   }
 
   import SprayJsonSupport._
 
   def perform(params: ApiPropertySet) = {
-
     val qpars = params ++ defaultproperties ++ Action.defaultParams + actiontype
-    val request = createRequest(Nil, Some(qpars.asFormUrlEncoded))
+    val request = createRequest(Some(qpars.asFormUrlEncoded))
     val domain = request.uri.authority.host.address
     val pipeline: HttpRequest => Future[Response] = (
       addHeader("User-Agent", useragent) ~>
@@ -88,7 +88,6 @@ trait Action[Response] {
 }
 
 object Action {
-  val cookieJar: MutableList[HttpHeader] = MutableList()
   val path = Path("/w/api.php")
   val defaultParams: ApiPropertySet = new ApiPropertySet(JSon :: Nil)
 }
