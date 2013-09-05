@@ -4,24 +4,25 @@ import scaldingbot.net.ApiPropertyValueSet
 import scaldingbot.net.ApiProperty
 
 abstract sealed class Token(val name : String) extends ApiProperty{
-  val value : String
+  val value_ : String
+  val value = Some(value_)
 }
 
-case class EditToken(val value : String) extends Token("edit")
-case class BlockToken(val value : String) extends Token("block")
-case class CentralAuthToken(val value : String) extends Token("centralauth")
-case class DeleteToken(val value : String) extends Token("delete")
-case class DeleteGlobalAccountToken(val value : String) extends Token("deleteglobalaccount")
-case class EmailToken(val value : String) extends Token("email")
-case class ImportToken(val value : String) extends Token("import")
-case class MoveToken(val value : String) extends Token("move")
-case class OptionsToken(val value : String) extends Token("options")
-case class PatrolToken(val value : String) extends Token("patrol")
-case class ProtectToken(val value : String) extends Token("protect")
-case class SetGlobalAccountStatusToken(val value : String) extends Token("setglobalaccountstatus")
-case class UnblockToken(val value : String) extends Token("unblock")
-case class WatchToken(val value : String) extends Token("watch")
-case class LoginToken(val value : String) extends Token("lgtoken")
+case class EditToken(val value_ : String) extends Token("edit")
+case class BlockToken(val value_ : String) extends Token("block")
+case class CentralAuthToken(val value_ : String) extends Token("centralauth")
+case class DeleteToken(val value_ : String) extends Token("delete")
+case class DeleteGlobalAccountToken(val value_ : String) extends Token("deleteglobalaccount")
+case class EmailToken(val value_ : String) extends Token("email")
+case class ImportToken(val value_ : String) extends Token("import")
+case class MoveToken(val value_ : String) extends Token("move")
+case class OptionsToken(val value_ : String) extends Token("options")
+case class PatrolToken(val value_ : String) extends Token("patrol")
+case class ProtectToken(val value_ : String) extends Token("protect")
+case class SetGlobalAccountStatusToken(val value_ : String) extends Token("setglobalaccountstatus")
+case class UnblockToken(val value_ : String) extends Token("unblock")
+case class WatchToken(val value_ : String) extends Token("watch")
+case class LoginToken(val value_ : String) extends Token("lgtoken")
 
 trait TokenType extends ApiPropertyValueSet {
   val name = "type"
@@ -45,10 +46,6 @@ object Token {
       case "unblock" => UnblockToken(value_)
       case "watch" => WatchToken(value_)
       case "lgtoken" => LoginToken(value_)
-      case x => {
-        case object InvalidToken extends Token(x) { val value = value_}
-        InvalidToken
-      }
     }
   }
 }

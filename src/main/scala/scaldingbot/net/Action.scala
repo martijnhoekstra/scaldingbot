@@ -41,7 +41,11 @@ trait Action[Response] {
 
   import SprayJsonSupport._
 
-  def perform(params: ApiPropertySet) = {
+  def perform[T](arg : T)(implicit marshaller : T => ApiPropertySet) : Future[Response] = {
+    perform(marshaller(arg))
+  }
+  
+  def perform(params: ApiPropertySet) : Future[Response] = {
     val qpars = params ++ defaultproperties ++ Action.defaultParams + actiontype
     val request = createRequest(Some(qpars.asFormUrlEncoded))
     val domain = request.uri.authority.host.address

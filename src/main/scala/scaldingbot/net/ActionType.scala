@@ -1,6 +1,7 @@
 package scaldingbot.net
 
-abstract sealed class ActionType(val value : String) extends ApiProperty{
+abstract sealed class ActionType(val value_ : String) extends ApiProperty{
+  val value = Some(value_)
   val name = "action"
 }
 

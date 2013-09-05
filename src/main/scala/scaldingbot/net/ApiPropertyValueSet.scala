@@ -15,8 +15,8 @@ case class GenericApiPropertyValueSet(name : String, values : Set[String]) exten
 
 trait ApiProperty {
   val name : String
-  val value : String
-  implicit def toApiPropertyValueSet = GenericApiPropertyValueSet(name, Set(value))
+  val value : Option[String]
+  implicit def toApiPropertyValueSet = GenericApiPropertyValueSet(name, value.toSet)
 }
 
 class ApiPropertySet(parameters : Seq[ApiPropertyValueSet]){
@@ -54,8 +54,8 @@ class ApiPropertySet(parameters : Seq[ApiPropertyValueSet]){
     ApiPropertySet(mm)
   }
   
-  def mergein[T](source : Option[Set[T]], add : T) = {
-    source.foldLeft(Set(add))((res, a) => res ++ a)
+  def mergein[T](source : Option[Set[T]], add : Option[T]) = {
+    source.foldLeft(add.toSet)((res, a) => res ++ a)
   }
   
   def mergeinall[T](source : Option[Set[T]], add : Set[T]) = {
