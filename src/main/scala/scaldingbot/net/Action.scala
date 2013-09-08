@@ -67,8 +67,7 @@ trait Action[Response] {
   def withCookies(jar: CookieJar) = {
     def res(r: HttpRequest) = {
       val mycookies = jar.cookiesfor(r.uri.authority.host.address)
-      val realcookies = mycookies.map(mk => HttpCookie(mk.name, mk.value, mk.expires))
-      val cookieheader = Cookie(realcookies.toList)
+      val cookieheader = Cookie(mycookies.toList)
       addHeader(cookieheader)(r)
     }
     res _
@@ -80,6 +79,7 @@ trait Action[Response] {
   def storeCookies(domain: String) = {
     def res(r: HttpResponse) = {
       val cookieHeaders = r.headers collect { case c: `Set-Cookie` => c }
+      println("received cookie headers: " + cookieHeaders)
       for (c <- cookieHeaders.map(ch => ch.cookie)) {
         val cookiedomain = c.domain.getOrElse(domain)
         cookiejar = cookiejar.setCookie(c, cookiedomain)
