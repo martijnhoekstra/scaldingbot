@@ -32,6 +32,7 @@ import scaldingbot.net.tokens.LoginToken
 import scaldingbot.net.login.LoginResponseJsonProtocol.LoginResponseBody
 import scala.concurrent.Future
 import scaldingbot.settings.Settings
+import scaldingbot.net.login.LoginProvider
 
 class LoginSpec(_system: ActorSystem) extends TestKit(_system) with ImplicitSender
   with WordSpecLike with Matchers with BeforeAndAfterAll with ScalaFutures {
@@ -44,6 +45,7 @@ class LoginSpec(_system: ActorSystem) extends TestKit(_system) with ImplicitSend
     TestKit.shutdownActorSystem(system)
   }
 
+  
   "A login action " must {
     "log in" in {
       if (credentials.pass != "") {
@@ -70,9 +72,22 @@ class LoginSpec(_system: ActorSystem) extends TestKit(_system) with ImplicitSend
         whenReady(fin) {
           case fin => fin.result should be("Success")
         }
-
       }
     }
+  }
+  
+  
+  
+  "A login provider" must {
+    "simply log in" in {
+      val provider = system.actorOf(LoginProvider(system))
+      provider ! credentials
+      val result = expectMsgPF(10 seconds){
+        case loginSuccess : LoginSuccess => loginSuccess
+        case x : LoginResponseBody => x
+      }
+      result.result should be("Success")
+     }
   }
 
 }

@@ -22,16 +22,18 @@ object TokenRequester {
   def apply() = Props[TokenRequester]
 }
 
+case class TokenList(val tokens : Seq[Token]) extends AnyVal
+
 class TokenRequester extends Actor  with Stash {
   import ExecutionContext.Implicits.global
 
   val req = TokenRequestAction(context.system)
 
   var cache: Map[String, Token] = Map.empty
-
-  def receive = {
-    case seq : Seq[Token] => {
-      this.cache = this.cache ++ seq.map(t => t.name -> t).toMap
+  
+    def receive = {
+    case tl : TokenList => {
+      this.cache = this.cache ++ tl.tokens.map(t => t.name -> t).toMap
       unstashAll()
     }
     case t: Token => {
@@ -46,7 +48,7 @@ class TokenRequester extends Actor  with Stash {
           val ftok = req.perform(new ApiPropertySet(ttype :: Nil)).map(tr => tr.tokens)
           ftok.onSuccess {
             case seq: Seq[Token] => {
-              self ! seq
+              self ! TokenList(seq)
             }
           }
         }

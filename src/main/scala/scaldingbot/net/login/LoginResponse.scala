@@ -27,10 +27,7 @@ object LoginResponseJsonProtocol extends DefaultJsonProtocol {
     }
     def read(value: JsValue) = value match {
       case obj: JsObject if (obj.fields.size == 6) => value.convertTo[LoginSuccess]
-      case obj: JsObject => {
-        println("converting to login failure")
-        value.convertTo[LoginFailure]
-      }
+      case obj: JsObject => value.convertTo[LoginFailure]
     }
   }
 

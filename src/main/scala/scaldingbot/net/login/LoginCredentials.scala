@@ -18,3 +18,11 @@ case class LoginName(value : Some[String]) extends ApiProperty {
 case class LoginPassword(value : Some[String]) extends ApiProperty {
   val name = "lgpassword"
 }
+
+object LoginCredentials{
+  implicit def topset(cred : LoginCredentials) = {
+    val loginname = LoginName(Some(cred.user))
+    val loginpass = LoginPassword(Some(cred.pass))
+    ApiPropertySet(Seq(loginname, loginpass).map(_.toApiPropertyValueSet))
+  }
+}

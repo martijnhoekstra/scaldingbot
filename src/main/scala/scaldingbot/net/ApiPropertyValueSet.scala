@@ -8,15 +8,22 @@ import spray.http.FormData
 trait ApiPropertyValueSet{
   val name : String
   val values : Set[String]
-  override def toString =  name + "=" + values.mkString("|")
+  override def toString =  {
+    if (values.isEmpty ) name
+    else name + "=" + values.mkString("|")
+  }
+  def +(that : ApiProperty) = {
+    ApiPropertySet(this :: Nil) + that
+  }
 }
 
 case class GenericApiPropertyValueSet(name : String, values : Set[String]) extends ApiPropertyValueSet
 
-trait ApiProperty {
+abstract class ApiProperty {
   val name : String
   val value : Option[String]
   implicit def toApiPropertyValueSet = GenericApiPropertyValueSet(name, value.toSet)
+  def +(that : ApiProperty) = this.toApiPropertyValueSet + that
 }
 
 class ApiPropertySet(parameters : Seq[ApiPropertyValueSet]){
