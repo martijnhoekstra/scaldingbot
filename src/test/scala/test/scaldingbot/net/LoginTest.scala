@@ -1,38 +1,28 @@
 package test.scaldingbot.net
 
-import akka.actor.ActorSystem
-import akka.actor.Actor
-import akka.actor.Props
-import akka.testkit.TestKit
-import org.scalatest.WordSpecLike
-import org.scalatest.matchers.MustMatchers
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.concurrent.duration.DurationInt
 import org.scalatest.BeforeAndAfterAll
-import akka.testkit.ImplicitSender
-import scaldingbot.net.tokens.TokenRequester
-import scaldingbot.net._
-import scala.concurrent.duration._
 import org.scalatest.Matchers
-import scaldingbot.net.tokens.EditToken
-import scaldingbot.net.tokens.TokenRequestAction
-import scaldingbot.net.ApiPropertySet
-import scaldingbot.net.tokens.TokenType
-import org.scalatest.concurrent.Futures
+import org.scalatest.WordSpecLike
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.time.Span
 import org.scalatest.time.Seconds
+import org.scalatest.time.Span
+import akka.actor.ActorSystem
+import akka.actor.actorRef2Scala
+import akka.testkit.ImplicitSender
+import akka.testkit.TestKit
+import scaldingbot.net.ApiPropertySet
 import scaldingbot.net.login.LoginAction
 import scaldingbot.net.login.LoginCredentials
-import scala.concurrent.ExecutionContext
-import spray.json.DeserializationException
-import spray.httpx.PipelineException
+import scaldingbot.net.login.LoginProvider
 import scaldingbot.net.login.LoginResponseJsonProtocol.LoginFailure
-import scaldingbot.net.login.LoginResponseJsonProtocol.LoginResponse
+import scaldingbot.net.login.LoginResponseJsonProtocol.LoginResponseBody
 import scaldingbot.net.login.LoginResponseJsonProtocol.LoginSuccess
 import scaldingbot.net.tokens.LoginToken
-import scaldingbot.net.login.LoginResponseJsonProtocol.LoginResponseBody
-import scala.concurrent.Future
 import scaldingbot.settings.Settings
-import scaldingbot.net.login.LoginProvider
+import scala.concurrent.ExecutionContext
 
 class LoginSpec(_system: ActorSystem) extends TestKit(_system) with ImplicitSender
   with WordSpecLike with Matchers with BeforeAndAfterAll with ScalaFutures {
@@ -70,7 +60,7 @@ class LoginSpec(_system: ActorSystem) extends TestKit(_system) with ImplicitSend
         })
 
         whenReady(fin) {
-          case fin => fin.result should be("Success")
+          case fin => println(fin); fin.result should be("Success")
         }
       }
     }

@@ -31,7 +31,6 @@ trait Action[Response] {
   val useragent = Settings.useragent
   val actiontype: ActionType
   val defaultproperties: ApiPropertySet
-  var cookiejar: CookieJar = CookieJar("", Map.empty, Set.empty)
   implicit val rootformat: RootJsonFormat[Response]
 
   def createRequest[T]( body: Option[T] = None)(implicit evidence: spray.httpx.marshalling.Marshaller[T]) = {
@@ -51,7 +50,7 @@ trait Action[Response] {
     val domain = request.uri.authority.host.address
     val pipeline: HttpRequest => Future[Response] = (
       addHeader("User-Agent", useragent) ~>
-      withCookies(cookiejar) ~>
+      withCookies(Action.cookiejar) ~>
       sendReceive ~>
       //Mind the side effects!
       storeCookies(domain) ~>
@@ -81,7 +80,7 @@ trait Action[Response] {
       val cookieHeaders = r.headers collect { case c: `Set-Cookie` => c }
       for (c <- cookieHeaders.map(ch => ch.cookie)) {
         val cookiedomain = c.domain.getOrElse(domain)
-        cookiejar = cookiejar.setCookie(c, cookiedomain)
+        Action.cookiejar = Action.cookiejar.setCookie(c, cookiedomain)
       }
       r
     }
@@ -93,4 +92,5 @@ trait Action[Response] {
 object Action {
   val path = Path("/w/api.php")
   val defaultParams: ApiPropertySet = new ApiPropertySet(JSon :: Nil)
+  var cookiejar: CookieJar = CookieJar("", Map.empty, Set.empty)
 }

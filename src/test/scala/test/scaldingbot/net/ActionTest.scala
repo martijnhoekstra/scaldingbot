@@ -1,24 +1,24 @@
 package test.scaldingbot.net
 
+import org.scalatest.BeforeAndAfterAll
 import org.scalatest.Matchers
 import org.scalatest.WordSpecLike
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.Seconds
 import org.scalatest.time.Span
+
 import akka.actor.ActorSystem
+import akka.testkit.TestKit
 import scaldingbot.net.Action
+import scaldingbot.net.ApiPropertySet
 import scaldingbot.net.TokensActionType
+import spray.http.FormData
 import spray.http.Uri.Authority
 import spray.http.Uri.Host
 import spray.http.Uri.Path
-import spray.http.Uri.{ Query => SQuery }
-import spray.json.pimpString
-import scaldingbot.net.ApiPropertySet
-import spray.json._
-import DefaultJsonProtocol._
-import spray.http.FormData
-import akka.testkit._
-import org.scalatest.BeforeAndAfterAll
+import spray.json.JsObject
+import spray.json.JsValue
+import spray.json.RootJsonFormat
 
 object TestAction extends Action[Boolean] {
   val actiontype = TokensActionType

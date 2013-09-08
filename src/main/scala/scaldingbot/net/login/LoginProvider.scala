@@ -52,4 +52,3 @@ class LoginProvider(action: LoginAction) extends Actor {
   }
 
 }
-

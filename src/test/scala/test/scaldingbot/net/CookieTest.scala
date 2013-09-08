@@ -3,19 +3,7 @@ package test.scaldingbot.net
 import org.scalatest.Matchers
 import org.scalatest.WordSpecLike
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.time.Seconds
-import org.scalatest.time.Span
-import akka.actor.ActorSystem
-import scaldingbot.net.Action
-import scaldingbot.net.TokensActionType
-import spray.http.Uri.Authority
-import spray.http.Uri.Host
-import spray.http.Uri.Path
-import spray.http.Uri.{ Query => SQuery }
-import spray.json.pimpString
-import scaldingbot.net.ApiPropertySet
-import spray.json._
-import DefaultJsonProtocol._
+
 import scaldingbot.net.CookieJar
 import spray.http.DateTime
 import spray.http.HttpCookie
