@@ -3,7 +3,7 @@ package scaldingbot.net.tokens
 import scaldingbot.net.ApiPropertyValueSet
 import scaldingbot.net.ApiProperty
 
-abstract sealed class Token(val name : String) extends ApiProperty{
+abstract sealed class Token(val name : String) extends ApiProperty {
   val value_ : String
   val value = Some(value_)
 }

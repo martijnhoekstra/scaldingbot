@@ -24,9 +24,13 @@ object EditResultJsonProtocol extends DefaultJsonProtocol {
       inner.getFields("result", "pageid", "title", "contentmodel", "oldrevid", "newrevid", "newtimestamp") match {
         case Seq(JsString("Success"), JsNumber(pageid), JsString(title), JsString(contentmodel), JsNumber(oldrevid),
                  JsNumber(newrevid), JsString(tsstring)) => {
+                   println("succesfully parsed EditResult")
                    EditSuccess(pageid.toInt, title, contentmodel, oldrevid.toInt, newrevid.toInt, new DateTime(tsstring))
         }
-        case x => throw new DeserializationException("unrecognised edit format" + value)
+        case x => {
+          println("failed to parse EditSuccess from " + value)
+          throw new DeserializationException("unrecognised edit format" + value)
+        }
 
       }
     }

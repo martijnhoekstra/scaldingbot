@@ -51,7 +51,7 @@ class EditSpec(_system: ActorSystem) extends TestKit(_system) with ImplicitSende
       val loginaction = new LoginAction(ApiPropertySet())
       val loginselection = system.actorSelection(system.actorOf(LoginProvider(loginaction)).path)
       val gateway = system.actorOf(EditGateway(tokenselect, loginselection))
-      val content = Content(None, "test content" + new Random().nextInt /*new Random().nextString(10) */, "test edit")
+      val content = Content(None, new Random().nextString(10), "test edit")
       val edit = Edit(Left("Scaldingbot"), content, None )
       gateway ! edit
       val result = expectMsgPF(10 seconds) {

@@ -14,5 +14,5 @@ object Settings {
     
   val source = "https://github.com/martijnhoekstra/scaldingbot/"
   val version = "0.2"
-  val useragent = s"Scaldingbot/0.2 ($source; $email - User:$user) SprayClient/1.2-M8"
+  val useragent = s"Scaldingbot/$version ($source; $email - User:$user) SprayClient/1.2-Nightlies"
 }

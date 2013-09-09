@@ -21,6 +21,11 @@ import spray.http.Uri.Path
 import spray.httpx.SprayJsonSupport.sprayJsonUnmarshaller
 import spray.json.RootJsonFormat
 import spray.httpx.SprayJsonSupport
+import spray.httpx.marshalling.Marshaller
+import spray.http.FormData
+import spray.http.ContentType._
+import spray.http._
+import MediaTypes._
 
 trait Action[Response] {
   import system.dispatcher
@@ -32,20 +37,26 @@ trait Action[Response] {
   val actiontype: ActionType
   val defaultproperties: ApiPropertySet
   implicit val rootformat: RootJsonFormat[Response]
+  implicit val UTF8FormDataMarshaller =
+    Marshaller.delegate[FormData, String](`application/x-www-form-urlencoded`) { (formData, contentType) ⇒
+      import java.net.URLEncoder.encode
+      val charset = "UTF-8"
+      formData.fields.map { case (key, value) ⇒ encode(key, charset) + '=' + encode(value, charset) }.mkString("&")
+    }
 
-  def createRequest[T]( body: Option[T] = None)(implicit evidence: spray.httpx.marshalling.Marshaller[T]) = {
+  def createRequest[T](body: Option[T] = None)(implicit evidence: spray.httpx.marshalling.Marshaller[T]) = {
     val uri = Uri(scheme, authority, Action.path)
     Post(uri, body)
   }
 
   import SprayJsonSupport._
 
-  def perform[T](arg : T)(implicit marshaller : T => ApiPropertySet) : Future[Response] = {
+  def perform[T](arg: T)(implicit marshaller: T => ApiPropertySet): Future[Response] = {
     perform(marshaller(arg))
   }
-  
-  def perform(params: ApiPropertySet) : Future[Response] = {
-    val qpars = params ++ defaultproperties ++ Action.defaultParams + actiontype
+
+  def perform(params: ApiPropertySet): Future[Response] = {
+    val qpars = Action.defaultParams ++ defaultproperties + actiontype ++ params 
     val request = createRequest(Some(qpars.asFormUrlEncoded))
     val domain = request.uri.authority.host.address
     val pipeline: HttpRequest => Future[Response] = (
@@ -54,8 +65,7 @@ trait Action[Response] {
       sendReceive ~>
       //Mind the side effects!
       storeCookies(domain) ~>
-      unmarshal[Response]
-    )
+      unmarshal[Response])
     pipeline(request)
   }
 
